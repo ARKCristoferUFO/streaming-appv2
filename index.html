@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Dispatch Pro v6.4</title>
+    <title>Web App Test 01 - Gestión</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -26,7 +26,7 @@
         <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl">
             <div class="text-center md:text-left">
                 <h1 class="text-2xl font-black text-blue-500 tracking-tight italic">SISTEMA SEMÁFORO 🚦</h1>
-                <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest text-center md:text-left">Gestión de Renovaciones v6.4</p>
+                <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Gestión de Renovaciones v6.5</p>
             </div>
             <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center min-w-[150px] mt-4 md:mt-0">
                 <p class="text-[9px] text-green-500 uppercase font-black tracking-widest">Ganancia Real</p>
@@ -44,6 +44,8 @@
                     <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none text-slate-300">
                         <option value="NETFLIX">Netflix</option>
                         <option value="PRIME VIDEO">Prime Video</option>
+                        <option value="CRUNCHYROLL">Crunchyroll</option>
+                        <option value="FLUJO TV">Flujo TV</option>
                         <option value="VIKI RAKUTEN">Viki Rakuten</option>
                         <option value="YOUTUBE PREMIUM">YouTube Premium</option>
                         <option value="SPOTIFY PREMIUM">Spotify Premium</option>
@@ -84,6 +86,8 @@
                         <option value="TODOS">Todos los servicios</option>
                         <option value="NETFLIX">Netflix</option>
                         <option value="PRIME VIDEO">Prime Video</option>
+                        <option value="CRUNCHYROLL">Crunchyroll</option>
+                        <option value="FLUJO TV">Flujo TV</option>
                         <option value="VIKI RAKUTEN">Viki Rakuten</option>
                         <option value="YOUTUBE PREMIUM">YouTube Premium</option>
                         <option value="SPOTIFY PREMIUM">Spotify Premium</option>
@@ -119,19 +123,6 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
         let clientesGlobal = [];
 
-        function formatFechaJS(dateObj) {
-            const anio = dateObj.getFullYear();
-            const mes = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const dia = String(dateObj.getDate()).padStart(2, '0');
-            return `${anio}-${mes}-${dia}`;
-        }
-
-        function establecerFechaAuto() {
-            const hoy = new Date();
-            hoy.setDate(hoy.getDate() + 28);
-            document.getElementById('vencimiento').value = formatFechaJS(hoy);
-        }
-
         async function cargarDatos() {
             try {
                 const res = await fetch(API_URL);
@@ -164,7 +155,7 @@
         }
 
         async function eliminarCliente(id) {
-            if(!confirm("¿Eliminar este registro permanentemente?")) return;
+            if(!confirm("¿Eliminar este registro?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
@@ -177,14 +168,10 @@
 
             let procesados = clientesGlobal.map(c => {
                 const hoy = new Date(); hoy.setHours(0,0,0,0);
-                
-                // CORRECCIÓN NAN DÍAS: Limpieza profunda de fecha
                 let fechaRaw = c[10].toString().split('T')[0];
                 let partes = fechaRaw.split('-');
                 let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
-                
-                const diffTime = fechaV - hoy;
-                const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
                 return { raw: c, dias: dias };
             });
 
@@ -201,16 +188,16 @@
                 const dias = item.dias;
                 totalG += (parseFloat(c[5]) - parseFloat(c[4]));
                 
-                let badge = "text-green-400 bg-green-400/10 border-green-400/20";
+                let badge = "text-green-400 border-green-400/20 bg-green-400/10";
                 let pulse = "";
                 let txt = `${dias} DÍAS`;
 
                 if(dias <= 0) {
-                    badge = "text-red-500 bg-red-500/10 border-red-500/40 font-black";
+                    badge = "text-red-500 border-red-500/40 bg-red-500/10 font-black";
                     pulse = "status-red";
                     txt = "VENCIDO";
                 } else if(dias <= 3) {
-                    badge = "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
+                    badge = "text-yellow-400 border-yellow-400/30 bg-yellow-400/10";
                 }
 
                 html += `
@@ -249,17 +236,11 @@
             let partes = c[10].split('T')[0].split('-');
             let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
             const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
-            
-            let msg = "";
-            if(dias <= 0) {
-                msg = `¡Hola, *${c[1]}*! 👋 ¿Cómo estás? Te escribimos para recordarte que tu plan de *${c[3]}* 🍿 termina hoy. 😱%0ASi quieres continuar viendo todo el contenido, solo tienes que contactarnos 📲 para reactivar tu cuenta.%0A¡Te esperamos! ✨`;
-            } else {
-                msg = `Hola *${c[1]}* , a tu servicio de *${c[3]}* le queda *${dias} días* de servicio. Recuerda que puedes renovar por este medio.`;
-            }
+            let msg = dias <= 0 ? `¡Hola! Tu plan de *${c[3]}* venció hoy. ¿Deseas renovar?` : `Hola *${c[1]}*, a tu servicio de *${c[3]}* le quedan *${dias} días*. Recuerda renovar a tiempo.`;
             window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${msg}`, '_blank');
         }
 
-        window.onload = () => { establecerFechaAuto(); cargarDatos(); };
+        window.onload = cargarDatos;
     </script>
 </body>
 </html>
