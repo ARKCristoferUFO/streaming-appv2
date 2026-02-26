@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web App Test 01 - Gestión</title>
+    <title>Web App Test 01 - Finanzas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -23,14 +23,23 @@
 </head>
 <body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs md:text-sm">
     <div class="max-w-7xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl">
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl font-black text-blue-500 tracking-tight italic">SISTEMA SEMÁFORO 🚦</h1>
-                <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest">Gestión de Renovaciones v6.5</p>
+        
+        <header class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
+                <p class="text-[9px] text-blue-400 uppercase font-black tracking-widest mb-1">Ganancia Hoy</p>
+                <p id="gananciaDia" class="text-xl font-black text-white">$0.00</p>
             </div>
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center min-w-[150px] mt-4 md:mt-0">
-                <p class="text-[9px] text-green-500 uppercase font-black tracking-widest">Ganancia Real</p>
-                <p id="gananciaTotal" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
+                <p class="text-[9px] text-purple-400 uppercase font-black tracking-widest mb-1">Esta Semana</p>
+                <p id="gananciaSemana" class="text-xl font-black text-white">$0.00</p>
+            </div>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
+                <p class="text-[9px] text-green-400 uppercase font-black tracking-widest mb-1">Este Mes</p>
+                <p id="gananciaMes" class="text-xl font-black text-white">$0.00</p>
+            </div>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
+                <p class="text-[9px] text-yellow-500 uppercase font-black tracking-widest mb-1">Año 2026</p>
+                <p id="gananciaAnio" class="text-xl font-black text-white">$0.00</p>
             </div>
         </header>
 
@@ -164,14 +173,35 @@
             const tabla = document.getElementById('cuerpoTabla');
             const busqueda = document.getElementById('buscador').value.toLowerCase();
             const filtroS = document.getElementById('filtroServicio').value;
-            let totalG = 0;
+            
+            // Variables para ganancias
+            let gDia = 0, gSemana = 0, gMes = 0, gAnio = 0;
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
 
             let procesados = clientesGlobal.map(c => {
-                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                // Cálculo de días para el semáforo
                 let fechaRaw = c[10].toString().split('T')[0];
                 let partes = fechaRaw.split('-');
                 let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
                 const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
+
+                // Lógica de Ganancias por Tiempo (Usando el ID como fecha de registro)
+                const fechaRegistro = new Date(parseInt(c[0]));
+                const gananciaIndividual = (parseFloat(c[5]) - parseFloat(c[4])) || 0;
+
+                // 1. Ganancia Diaria
+                if(fechaRegistro.toDateString() === hoy.toDateString()) gDia += gananciaIndividual;
+
+                // 2. Ganancia Semanal (últimos 7 días)
+                const haceUnaSemana = new Date(); haceUnaSemana.setDate(hoy.getDate() - 7);
+                if(fechaRegistro >= haceUnaSemana) gSemana += gananciaIndividual;
+
+                // 3. Ganancia Mensual (mismo mes y año)
+                if(fechaRegistro.getMonth() === hoy.getMonth() && fechaRegistro.getFullYear() === hoy.getFullYear()) gMes += gananciaIndividual;
+
+                // 4. Ganancia Anual (mismo año)
+                if(fechaRegistro.getFullYear() === hoy.getFullYear()) gAnio += gananciaIndividual;
+
                 return { raw: c, dias: dias };
             });
 
@@ -186,7 +216,6 @@
             filtrados.forEach((item) => {
                 const c = item.raw;
                 const dias = item.dias;
-                totalG += (parseFloat(c[5]) - parseFloat(c[4]));
                 
                 let badge = "text-green-400 border-green-400/20 bg-green-400/10";
                 let pulse = "";
@@ -221,7 +250,12 @@
                 `;
             });
             tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-600 uppercase">Sin datos</td></tr>';
-            document.getElementById('gananciaTotal').innerText = `$${totalG.toFixed(2)}`;
+            
+            // Actualizar recuadros de ganancias
+            document.getElementById('gananciaDia').innerText = `$${gDia.toFixed(2)}`;
+            document.getElementById('gananciaSemana').innerText = `$${gSemana.toFixed(2)}`;
+            document.getElementById('gananciaMes').innerText = `$${gMes.toFixed(2)}`;
+            document.getElementById('gananciaAnio').innerText = `$${gAnio.toFixed(2)}`;
         }
 
         function enviarAccesoWS(id) {
