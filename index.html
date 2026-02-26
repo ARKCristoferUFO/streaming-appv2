@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web App Test 01 - Finanzas</title>
+    <title>Web App Test 01 - Combo Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -13,12 +13,10 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        
         .status-red { animation: glow-red 1.5s infinite; }
-        @keyframes glow-red { 
-            0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); } 
-            50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); } 
-        }
+        @keyframes glow-red { 0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); } 50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); } }
+        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs md:text-sm">
@@ -45,7 +43,13 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 bg-slate-900 p-6 rounded-2xl border border-slate-800 h-fit sticky top-4 shadow-xl">
-                <h2 class="text-lg font-bold mb-4 text-blue-400 flex items-center">📝 Registro de Venta</h2>
+                <h2 class="text-lg font-bold mb-4 text-blue-400 flex items-center justify-between">
+                    <span>📝 Registro</span>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[9px] text-slate-500 uppercase">Combo</span>
+                        <input type="checkbox" id="mantenerDatos" class="w-4 h-4 accent-blue-500 cursor-pointer">
+                    </div>
+                </h2>
                 <div class="space-y-3">
                     <input id="nombre" type="text" placeholder="Nombre Cliente" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500">
                     <input id="telefono" type="text" placeholder="WhatsApp (Ej: 58412...)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500">
@@ -73,7 +77,7 @@
                     </div>
 
                     <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-2">
-                        <input id="correo" type="text" placeholder="Usuario/Email" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                        <input id="correo" type="text" placeholder="Email Cuenta" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
                         <input id="clave" type="text" placeholder="Contraseña" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
                         <div class="grid grid-cols-2 gap-2">
                             <input id="perfil" type="text" placeholder="Perfil" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
@@ -81,46 +85,30 @@
                         </div>
                     </div>
                     
-                    <label class="text-[10px] text-blue-400 font-bold ml-1 uppercase">Vencimiento (YYYY-MM-DD)</label>
                     <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-300 font-bold">
 
                     <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg shadow-lg transition uppercase tracking-wider">Guardar Registro</button>
+                    <p id="msgCombo" class="hidden text-[10px] text-blue-400 text-center animate-pulse">✨ Datos mantenidos para el siguiente servicio</p>
                 </div>
             </div>
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
                 <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row gap-2">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar por nombre o correo..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
-                    <select id="filtroServicio" onchange="renderizarTabla()" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none text-slate-400 font-bold">
-                        <option value="TODOS">Todos los servicios</option>
-                        <option value="NETFLIX">Netflix</option>
-                        <option value="PRIME VIDEO">Prime Video</option>
-                        <option value="CRUNCHYROLL">Crunchyroll</option>
-                        <option value="FLUJO TV">Flujo TV</option>
-                        <option value="VIKI RAKUTEN">Viki Rakuten</option>
-                        <option value="YOUTUBE PREMIUM">YouTube Premium</option>
-                        <option value="SPOTIFY PREMIUM">Spotify Premium</option>
-                        <option value="APPLE TV">Apple TV</option>
-                        <option value="IPTV">IPTV</option>
-                        <option value="TELELATINO">Telelatino</option>
-                        <option value="CANVA PRO">Canva Pro</option>
-                        <option value="CAPCUT">Capcut</option>
-                    </select>
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
                 </div>
-                
                 <div class="overflow-x-auto max-h-[600px]">
                     <table class="w-full text-left border-separate border-spacing-0">
                         <thead class="bg-slate-950 text-slate-500 text-[10px] uppercase tracking-widest sticky top-0 z-10">
                             <tr>
-                                <th class="p-4 border-b border-slate-800">Cliente / Servicio</th>
+                                <th class="p-4 border-b border-slate-800">Cliente</th>
                                 <th class="p-4 text-center border-b border-slate-800">Estado</th>
-                                <th class="p-4 border-b border-slate-800">Vencimiento</th>
-                                <th class="p-4 text-center border-b border-slate-800">WhatsApp</th>
+                                <th class="p-4 border-b border-slate-800">Vence</th>
+                                <th class="p-4 text-center border-b border-slate-800">Acciones</th>
                                 <th class="p-4 border-b border-slate-800"></th>
                             </tr>
                         </thead>
-                        <tbody id="cuerpoTabla" class="divide-y divide-slate-800">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase">Cargando base de datos...</td></tr>
+                        <tbody id="cuerpoTabla" class="divide-y divide-slate-800 text-[11px] md:text-sm">
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase">Sincronizando...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -137,13 +125,13 @@
                 const res = await fetch(API_URL);
                 clientesGlobal = await res.json();
                 renderizarTabla();
-            } catch(e) {
-                document.getElementById('cuerpoTabla').innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500 font-bold uppercase">Error de sincronización</td></tr>';
-            }
+            } catch(e) { console.error("Error cargando", e); }
         }
 
         async function guardarEnGoogle() {
             const btn = document.getElementById('btnGuardar');
+            const mantener = document.getElementById('mantenerDatos').checked;
+            
             const data = {
                 id: Date.now(),
                 nombre: document.getElementById('nombre').value.trim(),
@@ -157,14 +145,29 @@
                 pin: document.getElementById('pin').value.trim(),
                 vencimiento: document.getElementById('vencimiento').value
             };
+
             if(!data.nombre || !data.vencimiento) return alert("⚠️ Nombre y Fecha son obligatorios");
+
             btn.disabled = true; btn.innerText = "REGISTRANDO...";
+            
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            setTimeout(() => location.reload(), 1000);
+
+            if(mantener) {
+                // Solo borramos campos específicos de la cuenta, mantenemos al cliente
+                document.getElementById('costo').value = "";
+                document.getElementById('precio').value = "";
+                document.getElementById('perfil').value = "";
+                document.getElementById('pin').value = "";
+                document.getElementById('msgCombo').classList.remove('hidden');
+                btn.disabled = false; btn.innerText = "GUARDAR SIGUIENTE";
+                cargarDatos(); // Recarga la tabla sin refrescar la página
+            } else {
+                location.reload();
+            }
         }
 
         async function eliminarCliente(id) {
-            if(!confirm("¿Eliminar este registro?")) return;
+            if(!confirm("¿Eliminar registro?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
@@ -172,86 +175,47 @@
         function renderizarTabla() {
             const tabla = document.getElementById('cuerpoTabla');
             const busqueda = document.getElementById('buscador').value.toLowerCase();
-            const filtroS = document.getElementById('filtroServicio').value;
-            
-            // Variables para ganancias
             let gDia = 0, gSemana = 0, gMes = 0, gAnio = 0;
             const hoy = new Date(); hoy.setHours(0,0,0,0);
 
             let procesados = clientesGlobal.map(c => {
-                // Cálculo de días para el semáforo
                 let fechaRaw = c[10].toString().split('T')[0];
                 let partes = fechaRaw.split('-');
                 let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
                 const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
-
-                // Lógica de Ganancias por Tiempo (Usando el ID como fecha de registro)
                 const fechaRegistro = new Date(parseInt(c[0]));
-                const gananciaIndividual = (parseFloat(c[5]) - parseFloat(c[4])) || 0;
+                const ganancia = (parseFloat(c[5]) - parseFloat(c[4])) || 0;
 
-                // 1. Ganancia Diaria
-                if(fechaRegistro.toDateString() === hoy.toDateString()) gDia += gananciaIndividual;
-
-                // 2. Ganancia Semanal (últimos 7 días)
-                const haceUnaSemana = new Date(); haceUnaSemana.setDate(hoy.getDate() - 7);
-                if(fechaRegistro >= haceUnaSemana) gSemana += gananciaIndividual;
-
-                // 3. Ganancia Mensual (mismo mes y año)
-                if(fechaRegistro.getMonth() === hoy.getMonth() && fechaRegistro.getFullYear() === hoy.getFullYear()) gMes += gananciaIndividual;
-
-                // 4. Ganancia Anual (mismo año)
-                if(fechaRegistro.getFullYear() === hoy.getFullYear()) gAnio += gananciaIndividual;
+                if(fechaRegistro.toDateString() === hoy.toDateString()) gDia += ganancia;
+                const hace7d = new Date(); hace7d.setDate(hoy.getDate() - 7);
+                if(fechaRegistro >= hace7d) gSemana += ganancia;
+                if(fechaRegistro.getMonth() === hoy.getMonth() && fechaRegistro.getFullYear() === hoy.getFullYear()) gMes += ganancia;
+                if(fechaRegistro.getFullYear() === hoy.getFullYear()) gAnio += ganancia;
 
                 return { raw: c, dias: dias };
             });
 
             procesados.sort((a, b) => a.dias - b.dias);
-
-            const filtrados = procesados.filter(item => {
-                const c = item.raw;
-                return (c[1].toLowerCase().includes(busqueda) || c[6].toLowerCase().includes(busqueda)) && (filtroS === "TODOS" || c[3] === filtroS);
-            });
+            const filtrados = procesados.filter(item => item.raw[1].toLowerCase().includes(busqueda) || item.raw[3].toLowerCase().includes(busqueda));
 
             let html = "";
-            filtrados.forEach((item) => {
-                const c = item.raw;
-                const dias = item.dias;
-                
-                let badge = "text-green-400 border-green-400/20 bg-green-400/10";
-                let pulse = "";
-                let txt = `${dias} DÍAS`;
-
-                if(dias <= 0) {
-                    badge = "text-red-500 border-red-500/40 bg-red-500/10 font-black";
-                    pulse = "status-red";
-                    txt = "VENCIDO";
-                } else if(dias <= 3) {
-                    badge = "text-yellow-400 border-yellow-400/30 bg-yellow-400/10";
-                }
-
+            filtrados.forEach(item => {
+                const c = item.raw; const dias = item.dias;
+                let badge = dias <= 0 ? "text-red-500 border-red-500/40 bg-red-500/10 status-red" : (dias <= 3 ? "text-yellow-400 border-yellow-400/30 bg-yellow-400/10" : "text-green-400 border-green-400/20 bg-green-400/10");
                 html += `
-                    <tr class="hover:bg-slate-800/40 transition">
-                        <td class="p-4">
-                            <div class="font-bold text-blue-400 text-sm">${c[1]}</div>
-                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">${c[3]}</div>
+                    <tr class="hover:bg-slate-800/40">
+                        <td class="p-4 font-bold text-blue-400">${c[1]} <br> <span class="text-[9px] text-slate-500 uppercase">${c[3]}</span></td>
+                        <td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] border ${badge}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span></td>
+                        <td class="p-4 font-mono text-slate-500">${c[10].split('T')[0]}</td>
+                        <td class="p-4 text-center space-x-1">
+                            <button onclick="enviarAccesoWS('${c[0]}')" class="btn-ws bg-blue-600 p-2 rounded text-[9px] font-black uppercase">Datos</button>
+                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 p-2 rounded text-[9px] font-black uppercase">Cobro</button>
                         </td>
-                        <td class="p-4 text-center">
-                            <span class="px-3 py-1.5 rounded-full text-[10px] border ${badge} ${pulse}">● ${txt}</span>
-                        </td>
-                        <td class="p-4 text-[10px] text-slate-500 font-mono font-bold">${c[10].split('T')[0]}</td>
-                        <td class="p-4 text-center space-x-2 flex justify-center">
-                            <button onclick="enviarAccesoWS('${c[0]}')" class="btn-ws bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
-                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Cobrar</button>
-                        </td>
-                        <td class="p-4 text-right">
-                            <button onclick="eliminarCliente('${c[0]}')" class="text-slate-800 hover:text-red-500 transition text-lg">🗑️</button>
-                        </td>
+                        <td class="p-4 text-right"><button onclick="eliminarCliente('${c[0]}')" class="text-slate-700 hover:text-red-500">🗑️</button></td>
                     </tr>
                 `;
             });
-            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-600 uppercase">Sin datos</td></tr>';
-            
-            // Actualizar recuadros de ganancias
+            tabla.innerHTML = html;
             document.getElementById('gananciaDia').innerText = `$${gDia.toFixed(2)}`;
             document.getElementById('gananciaSemana').innerText = `$${gSemana.toFixed(2)}`;
             document.getElementById('gananciaMes').innerText = `$${gMes.toFixed(2)}`;
@@ -260,18 +224,13 @@
 
         function enviarAccesoWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
-            const msg = `*🍿 PERFIL ${c[3]} 🍿*%0A*Usuario:* ${c[6]}%0A*Clave:* ${c[7]}%0A*Perfil:* ${c[8]}%0A*Pin:* ${c[9]}%0A*Vence:* ${c[10].split('T')[0]}%0A%0A*Términos:*%0A• No modificar los perfiles%0A• No cambiar correo ni contraseña%0A• No conectar más de un dispositivo`;
+            const msg = `*🍿 PERFIL ${c[3]} 🍿*%0A*Usuario:* ${c[6]}%0A*Clave:* ${c[7]}%0A*Perfil:* ${c[8]}%0A*Pin:* ${c[9]}%0A*Vence:* ${c[10].split('T')[0]}`;
             window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${msg}`, '_blank');
         }
 
         function enviarCobroWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
-            const hoy = new Date(); hoy.setHours(0,0,0,0);
-            let partes = c[10].split('T')[0].split('-');
-            let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
-            const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
-            let msg = dias <= 0 ? `¡Hola! Tu plan de *${c[3]}* venció hoy. ¿Deseas renovar?` : `Hola *${c[1]}*, a tu servicio de *${c[3]}* le quedan *${dias} días*. Recuerda renovar a tiempo.`;
-            window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${msg}`, '_blank');
+            window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=Hola ${c[1]}, te recuerdo renovar tu servicio de ${c[3]} que vence pronto.`, '_blank');
         }
 
         window.onload = cargarDatos;
