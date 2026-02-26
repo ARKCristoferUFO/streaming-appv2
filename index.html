@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Planet - Panel de Control</title>
+    <title>Streaming Planet - Panel Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -49,7 +49,7 @@
                     </div>
                 </h2>
                 <div class="space-y-3">
-                    <input id="nombre" type="text" placeholder="Nombre Cliente" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-bold">
+                    <input id="nombre" type="text" placeholder="Nombre Cliente" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-bold uppercase">
                     <input id="telefono" type="text" placeholder="WhatsApp (Ej: 58412...)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500">
                     
                     <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none text-slate-300 font-bold">
@@ -83,19 +83,17 @@
                         </div>
                     </div>
                     
-                    <label class="text-[9px] text-slate-500 font-bold ml-1 uppercase">Vencimiento</label>
                     <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-300 font-bold">
 
                     <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg shadow-lg transition uppercase tracking-wider">Guardar Registro</button>
-                    <p id="msgCombo" class="hidden text-[10px] text-blue-400 text-center animate-pulse font-bold">✨ Registrando combo... datos mantenidos</p>
+                    <button onclick="limpiarFormulario()" class="w-full bg-slate-800 text-slate-400 text-[10px] py-1 rounded hover:bg-slate-700 transition">LIMPIAR FORMULARIO</button>
                 </div>
             </div>
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
                 <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row gap-2">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar por nombre o servicio..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
                 </div>
-                
                 <div class="overflow-x-auto max-h-[600px]">
                     <table class="w-full text-left border-separate border-spacing-0">
                         <thead class="bg-slate-950 text-slate-500 text-[10px] uppercase tracking-widest sticky top-0 z-10">
@@ -108,7 +106,7 @@
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase italic">Cargando datos...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase italic">Sincronizando...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -153,7 +151,6 @@
                 document.getElementById('precio').value = "";
                 document.getElementById('perfil').value = "";
                 document.getElementById('pin').value = "";
-                document.getElementById('msgCombo').classList.remove('hidden');
                 btn.disabled = false; btn.innerText = "GUARDAR SIGUIENTE";
                 cargarDatos();
             } else {
@@ -161,8 +158,13 @@
             }
         }
 
+        function limpiarFormulario() {
+            document.querySelectorAll('input').forEach(i => i.value = "");
+            document.getElementById('mantenerDatos').checked = false;
+        }
+
         async function eliminarCliente(id) {
-            if(!confirm("¿Eliminar este registro?")) return;
+            if(!confirm("¿Eliminar registro?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
@@ -200,15 +202,15 @@
                 html += `
                     <tr class="hover:bg-slate-800/40 transition">
                         <td class="p-4">
-                            <div class="font-bold text-blue-400 text-sm capitalize">${c[1]}</div>
-                            <div class="text-[10px] text-slate-500 font-black uppercase tracking-widest">${c[3]}</div>
+                            <div class="font-bold text-blue-400 text-sm uppercase">${c[1]}</div>
+                            <div class="text-[10px] text-slate-500 font-black uppercase">${c[3]}</div>
                         </td>
                         <td class="p-4 text-center">
                             <span class="px-3 py-1.5 rounded-full text-[9px] border ${badge}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span>
                         </td>
                         <td class="p-4 text-[10px] text-slate-500 font-mono font-bold">${c[10].split('T')[0]}</td>
                         <td class="p-4 text-center space-x-2 flex justify-center">
-                            <button onclick="enviarAccesoWS('${c[1]}')" class="btn-ws bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
+                            <button onclick="enviarAccesoWS('${c[1]}', '${c[0]}')" class="btn-ws bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
                             <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Cobrar</button>
                         </td>
                         <td class="p-4 text-right"><button onclick="eliminarCliente('${c[0]}')" class="text-slate-800 hover:text-red-500 transition text-lg">🗑️</button></td>
@@ -222,18 +224,19 @@
             document.getElementById('gananciaAnio').innerText = `$${gAnio.toFixed(2)}`;
         }
 
-        function enviarAccesoWS(nombreCliente) {
+        function enviarAccesoWS(nombreCliente, idFila) {
+            // Buscamos todos los servicios de ese cliente
             const servicios = clientesGlobal.filter(x => x[1].toLowerCase() === nombreCliente.toLowerCase());
-            if(servicios.length === 0) return;
+            
+            // Si por alguna razón la búsqueda múltiple falla, usamos al menos el de la fila actual
+            const datosFinales = servicios.length > 0 ? servicios : [clientesGlobal.find(x => x[0] == idFila)];
 
-            let mensaje = `*⭐ SERVICIOS ACTIVOS ⭐*%0A`;
-            mensaje += `*Streaming Planet Streaming*%0A`;
-            mensaje += `_Gracias por tu compra con nosotros_%0A%0A`;
-            mensaje += `*CLIENTE:* ${nombreCliente.toUpperCase()}%0A`;
+            let mensaje = `*⭐ SERVICIOS ACTIVOS - ${nombreCliente.toUpperCase()} ⭐*%0A`;
+            mensaje += `_Gracias por tu compra en Streaming planet steaming_%0A%0A`;
 
-            servicios.forEach((c) => {
-                mensaje += `%0A*------------------------------*%0A`;
-                mensaje += `📺 *PLATAFORMA:* ${c[3]}%0A`;
+            datosFinales.forEach((c) => {
+                mensaje += `*------------------------------*%0A`;
+                mensaje += `📺 *SERVICIO:* ${c[3]}%0A`;
                 mensaje += `👤 *Usuario:* ${c[6]}%0A`;
                 mensaje += `🔑 *Clave:* ${c[7]}%0A`;
                 mensaje += `👤 *Perfil:* ${c[8]}%0A`;
@@ -241,16 +244,19 @@
                 mensaje += `🗓️ *Vence:* ${c[10].split('T')[0]}%0A`;
             });
 
-            mensaje += `%0A*------------------------------*%0A`;
-            mensaje += `%0A*⚠️ REGLAS DEL SERVICIO:*%0A- Prohibido cambiar correo o contraseña.%0A- No crear perfiles adicionales.%0A- Disfruta tu pantalla 🍿`;
+            mensaje += `*------------------------------*%0A%0A`;
+            mensaje += `*⚠️ REGLAS IMPORTANTES:*%0A`;
+            mensaje += `- No cambiar datos de la cuenta.%0A`;
+            mensaje += `- Usar solo el perfil asignado.%0A`;
+            mensaje += `- Disfruta tu programación 🍿`;
 
-            const tlf = servicios[0][2];
+            const tlf = datosFinales[0][2];
             window.open(`https://web.whatsapp.com/send?phone=${tlf}&text=${mensaje}`, '_blank');
         }
 
         function enviarCobroWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
-            const mensaje = `Hola *${c[1]}*, te saluda *Streaming Planet Streaming*. Te recordamos que tu servicio de *${c[3]}* está próximo a vencer. ¿Deseas renovar? 🚀`;
+            const mensaje = `Hola *${c[1]}*, te saluda *Streaming Planet Streaming*. Tu servicio de *${c[3]}* vence pronto. ¿Deseas renovar? 🚀`;
             window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${mensaje}`, '_blank');
         }
 
