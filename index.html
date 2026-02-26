@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming Dispatch Pro v6.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .btn-ws { transition: all 0.2s; }
+        .btn-ws:hover { transform: scale(1.05); }
+        .loading { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        
+        .status-red { animation: glow-red 1.5s infinite; }
+        @keyframes glow-red { 
+            0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); } 
+            50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); } 
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs md:text-sm">
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl font-black text-blue-500 tracking-tight italic">SISTEMA SEMÁFORO 🚦</h1>
+                <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest text-center md:text-left">Gestión de Renovaciones v6.2</p>
+            </div>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center min-w-[150px] mt-4 md:mt-0">
+                <p class="text-[9px] text-green-500 uppercase font-black tracking-widest">Ganancia Real</p>
+                <p id="gananciaTotal" class="text-xl font-black text-white">$0.00</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-1 bg-slate-900 p-6 rounded-2xl border border-slate-800 h-fit sticky top-4 shadow-xl">
+                <h2 class="text-lg font-bold mb-4 text-blue-400 flex items-center">📝 Registro de Venta</h2>
+                <div class="space-y-3">
+                    <input id="nombre" type="text" placeholder="Nombre Cliente" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500">
+                    <input id="telefono" type="text" placeholder="WhatsApp (Ej: 58412...)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500">
+                    
+                    <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none text-slate-300">
+                        <option value="NETFLIX">Netflix</option>
+                        <option value="PRIME VIDEO">Prime Video</option>
+                        <option value="VIKI RAKUTEN">Viki Rakuten</option>
+                        <option value="YOUTUBE PREMIUM">YouTube Premium</option>
+                        <option value="SPOTIFY PREMIUM">Spotify Premium</option>
+                        <option value="APPLE TV">Apple TV</option>
+                        <option value="IPTV">IPTV</option>
+                        <option value="TELELATINO">Telelatino</option>
+                        <option value="CANVA PRO">Canva Pro</option>
+                        <option value="CAPCUT">Capcut</option>
+                        <option value="MAX">Max</option>
+                        <option value="DISNEY+">Disney+</option>
+                    </select>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <input id="costo" type="number" step="0.01" placeholder="Costo $" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5">
+                        <input id="precio" type="number" step="0.01" placeholder="Venta $" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5">
+                    </div>
+
+                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-2">
+                        <input id="correo" type="text" placeholder="Usuario/Email" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                        <input id="clave" type="text" placeholder="Contraseña" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input id="perfil" type="text" placeholder="Perfil" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                            <input id="pin" type="text" placeholder="PIN" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                        </div>
+                    </div>
+                    
+                    <label class="text-[10px] text-blue-400 font-bold ml-1 uppercase">Vencimiento (YYYY-MM-DD)</label>
+                    <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-300 font-bold">
+
+                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg shadow-lg transition uppercase tracking-wider">Guardar Registro</button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
+                <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row gap-2">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar por nombre o correo..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
+                    <select id="filtroServicio" onchange="renderizarTabla()" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none text-slate-400 font-bold">
+                        <option value="TODOS">Todos los servicios</option>
+                        <option value="NETFLIX">Netflix</option>
+                        <option value="PRIME VIDEO">Prime Video</option>
+                        <option value="VIKI RAKUTEN">Viki Rakuten</option>
+                        <option value="YOUTUBE PREMIUM">YouTube Premium</option>
+                        <option value="SPOTIFY PREMIUM">Spotify Premium</option>
+                        <option value="APPLE TV">Apple TV</option>
+                        <option value="IPTV">IPTV</option>
+                        <option value="TELELATINO">Telelatino</option>
+                        <option value="CANVA PRO">Canva Pro</option>
+                        <option value="CAPCUT">Capcut</option>
+                    </select>
+                </div>
+                
+                <div class="overflow-x-auto max-h-[600px]">
+                    <table class="w-full text-left border-separate border-spacing-0">
+                        <thead class="bg-slate-950 text-slate-500 text-[10px] uppercase tracking-widest sticky top-0 z-10">
+                            <tr>
+                                <th class="p-4 border-b border-slate-800">Cliente / Servicio</th>
+                                <th class="p-4 text-center border-b border-slate-800">Estado</th>
+                                <th class="p-4 border-b border-slate-800">Vencimiento</th>
+                                <th class="p-4 text-center border-b border-slate-800">WhatsApp</th>
+                                <th class="p-4 border-b border-slate-800"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTabla" class="divide-y divide-slate-800">
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase">Cargando base de datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
+        let clientesGlobal = [];
+
+        function formatFechaJS(dateObj) {
+            const anio = dateObj.getFullYear();
+            const mes = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dia = String(dateObj.getDate()).padStart(2, '0');
+            return `${anio}-${mes}-${dia}`;
+        }
+
+        function establecerFechaAuto() {
+            const hoy = new Date();
+            hoy.setDate(hoy.getDate() + 28);
+            document.getElementById('vencimiento').value = formatFechaJS(hoy);
+        }
+
+        async function cargarDatos() {
+            try {
+                const res = await fetch(API_URL);
+                clientesGlobal = await res.json();
+                renderizarTabla();
+            } catch(e) {
+                document.getElementById('cuerpoTabla').innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500 font-bold uppercase">Error de conexión</td></tr>';
+            }
+        }
+
+        async function guardarEnGoogle() {
+            const btn = document.getElementById('btnGuardar');
+            const data = {
+                id: Date.now(),
+                nombre: document.getElementById('nombre').value.trim(),
+                telefono: document.getElementById('telefono').value.trim(),
+                servicio: document.getElementById('servicio').value,
+                costo: document.getElementById('costo').value || 0,
+                precio: document.getElementById('precio').value || 0,
+                correo: document.getElementById('correo').value.trim(),
+                clave: document.getElementById('clave').value.trim(),
+                perfil: document.getElementById('perfil').value.trim(),
+                pin: document.getElementById('pin').value.trim(),
+                vencimiento: document.getElementById('vencimiento').value
+            };
+            if(!data.nombre || !data.vencimiento) return alert("⚠️ Nombre y Fecha son obligatorios");
+            btn.disabled = true; btn.innerText = "REGISTRANDO...";
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+            setTimeout(() => location.reload(), 1000);
+        }
+
+        async function eliminarCliente(id) {
+            if(!confirm("¿Eliminar este registro permanentemente?")) return;
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
+            location.reload();
+        }
+
+        function renderizarTabla() {
+            const tabla = document.getElementById('cuerpoTabla');
+            const busqueda = document.getElementById('buscador').value.toLowerCase();
+            const filtroS = document.getElementById('filtroServicio').value;
+            let totalG = 0;
+
+            let procesados = clientesGlobal.map(c => {
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                const fechaV = new Date(c[10] + "T00:00:00");
+                const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
+                return { raw: c, dias: dias };
+            });
+
+            procesados.sort((a, b) => a.dias - b.dias);
+
+            const filtrados = procesados.filter(item => {
+                const c = item.raw;
+                return (c[1].toLowerCase().includes(busqueda) || c[6].toLowerCase().includes(busqueda)) && (filtroS === "TODOS" || c[3] === filtroS);
+            });
+
+            let html = "";
+            filtrados.forEach((item) => {
+                const c = item.raw;
+                const dias = item.dias;
+                totalG += (parseFloat(c[5]) - parseFloat(c[4]));
+                
+                let badge = "text-green-400 bg-green-400/10 border-green-400/20";
+                let pulse = "";
+                let txt = `${dias} DÍAS`;
+
+                if(dias <= 0) {
+                    badge = "text-red-500 bg-red-500/10 border-red-500/40 font-black";
+                    pulse = "status-red";
+                    txt = "VENCIDO";
+                } else if(dias <= 3) {
+                    badge = "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
+                }
+
+                html += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="p-4">
+                            <div class="font-bold text-blue-400 text-sm">${c[1]}</div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">${c[3]}</div>
+                        </td>
+                        <td class="p-4 text-center">
+                            <span class="px-3 py-1.5 rounded-full text-[10px] border ${badge} ${pulse}">● ${txt}</span>
+                        </td>
+                        <td class="p-4 text-[10px] text-slate-500 font-mono font-bold">${c[10]}</td>
+                        <td class="p-4 text-center space-x-2 flex justify-center">
+                            <button onclick="enviarAccesoWS('${c[0]}')" class="btn-ws bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
+                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Cobrar</button>
+                        </td>
+                        <td class="p-4 text-right">
+                            <button onclick="eliminarCliente('${c[0]}')" class="text-slate-800 hover:text-red-500 transition text-lg">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-600 uppercase">Sin registros</td></tr>';
+            document.getElementById('gananciaTotal').innerText = `$${totalG.toFixed(2)}`;
+        }
+
+        function enviarAccesoWS(id) {
+            const c = clientesGlobal.find(x => x[0] == id);
+            const msg = `*🍿 PERFIL ${c[3]} 🍿*%0A*Usuario:* ${c[6]}%0A*Clave:* ${c[7]}%0A*Perfil:* ${c[8]}%0A*Pin:* ${c[9]}%0A*Vence:* ${c[10]}%0A%0A*Términos:*%0A• No modificar los perfiles%0A• No cambiar correo ni contraseña%0A• No conectar más de un dispositivo`;
+            window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${msg}`, '_blank');
+        }
+
+        function enviarCobroWS(id) {
+            const c = clientesGlobal.find(x => x[0] == id);
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            const fechaV = new Date(c[10] + "T00:00:00");
+            const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
+            
+            let msg = "";
+            if(dias <= 0) {
+                msg = `¡Hola, *${c[1]}*! 👋 ¿Cómo estás? Te escribimos para recordarte que tu plan de *${c[3]}* 🍿 termina hoy. 😱%0A` +
+                      `Si quieres continuar viendo todo el contenido, solo tienes que contactarnos 📲 para reactivar tu cuenta.%0A` +
+                      `¡Te esperamos! ✨`;
+            } else {
+                msg = `Hola *${c[1]}* , a tu servicio de *${c[3]}* le queda *${dias} días* de servicio. Recuerda que puedes renovar por este medio.`;
+            }
+            window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${msg}`, '_blank');
+        }
+
+        window.onload = () => { establecerFechaAuto(); cargarDatos(); };
+    </script>
+</body>
+</html>
