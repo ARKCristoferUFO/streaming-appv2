@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Dispatch Pro v6.2</title>
+    <title>Streaming Dispatch Pro v6.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -26,7 +26,7 @@
         <header class="flex flex-col md:flex-row justify-between items-center mb-6 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl">
             <div class="text-center md:text-left">
                 <h1 class="text-2xl font-black text-blue-500 tracking-tight italic">SISTEMA SEMÁFORO 🚦</h1>
-                <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest text-center md:text-left">Gestión de Renovaciones v6.2</p>
+                <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest text-center md:text-left">Gestión de Renovaciones v6.4</p>
             </div>
             <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center min-w-[150px] mt-4 md:mt-0">
                 <p class="text-[9px] text-green-500 uppercase font-black tracking-widest">Ganancia Real</p>
@@ -138,7 +138,7 @@
                 clientesGlobal = await res.json();
                 renderizarTabla();
             } catch(e) {
-                document.getElementById('cuerpoTabla').innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500 font-bold uppercase">Error de conexión</td></tr>';
+                document.getElementById('cuerpoTabla').innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500 font-bold uppercase">Error de sincronización</td></tr>';
             }
         }
 
@@ -177,8 +177,14 @@
 
             let procesados = clientesGlobal.map(c => {
                 const hoy = new Date(); hoy.setHours(0,0,0,0);
-                const fechaV = new Date(c[10] + "T00:00:00");
-                const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
+                
+                // CORRECCIÓN NAN DÍAS: Limpieza profunda de fecha
+                let fechaRaw = c[10].toString().split('T')[0];
+                let partes = fechaRaw.split('-');
+                let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
+                
+                const diffTime = fechaV - hoy;
+                const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 return { raw: c, dias: dias };
             });
 
@@ -216,7 +222,7 @@
                         <td class="p-4 text-center">
                             <span class="px-3 py-1.5 rounded-full text-[10px] border ${badge} ${pulse}">● ${txt}</span>
                         </td>
-                        <td class="p-4 text-[10px] text-slate-500 font-mono font-bold">${c[10]}</td>
+                        <td class="p-4 text-[10px] text-slate-500 font-mono font-bold">${c[10].split('T')[0]}</td>
                         <td class="p-4 text-center space-x-2 flex justify-center">
                             <button onclick="enviarAccesoWS('${c[0]}')" class="btn-ws bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
                             <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Cobrar</button>
@@ -227,27 +233,26 @@
                     </tr>
                 `;
             });
-            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-600 uppercase">Sin registros</td></tr>';
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-600 uppercase">Sin datos</td></tr>';
             document.getElementById('gananciaTotal').innerText = `$${totalG.toFixed(2)}`;
         }
 
         function enviarAccesoWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
-            const msg = `*🍿 PERFIL ${c[3]} 🍿*%0A*Usuario:* ${c[6]}%0A*Clave:* ${c[7]}%0A*Perfil:* ${c[8]}%0A*Pin:* ${c[9]}%0A*Vence:* ${c[10]}%0A%0A*Términos:*%0A• No modificar los perfiles%0A• No cambiar correo ni contraseña%0A• No conectar más de un dispositivo`;
+            const msg = `*🍿 PERFIL ${c[3]} 🍿*%0A*Usuario:* ${c[6]}%0A*Clave:* ${c[7]}%0A*Perfil:* ${c[8]}%0A*Pin:* ${c[9]}%0A*Vence:* ${c[10].split('T')[0]}%0A%0A*Términos:*%0A• No modificar los perfiles%0A• No cambiar correo ni contraseña%0A• No conectar más de un dispositivo`;
             window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${msg}`, '_blank');
         }
 
         function enviarCobroWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const hoy = new Date(); hoy.setHours(0,0,0,0);
-            const fechaV = new Date(c[10] + "T00:00:00");
+            let partes = c[10].split('T')[0].split('-');
+            let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
             const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
             
             let msg = "";
             if(dias <= 0) {
-                msg = `¡Hola, *${c[1]}*! 👋 ¿Cómo estás? Te escribimos para recordarte que tu plan de *${c[3]}* 🍿 termina hoy. 😱%0A` +
-                      `Si quieres continuar viendo todo el contenido, solo tienes que contactarnos 📲 para reactivar tu cuenta.%0A` +
-                      `¡Te esperamos! ✨`;
+                msg = `¡Hola, *${c[1]}*! 👋 ¿Cómo estás? Te escribimos para recordarte que tu plan de *${c[3]}* 🍿 termina hoy. 😱%0ASi quieres continuar viendo todo el contenido, solo tienes que contactarnos 📲 para reactivar tu cuenta.%0A¡Te esperamos! ✨`;
             } else {
                 msg = `Hola *${c[1]}* , a tu servicio de *${c[3]}* le queda *${dias} días* de servicio. Recuerda que puedes renovar por este medio.`;
             }
