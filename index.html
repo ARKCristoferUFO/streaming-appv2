@@ -55,6 +55,8 @@
                     <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none text-slate-300 font-bold">
                         <option value="NETFLIX">Netflix</option>
                         <option value="PRIME VIDEO">Prime Video</option>
+                        <option value="PARAMOUNT+">Paramount Plus</option> <option value="MAX">Max</option>
+                        <option value="DISNEY+">Disney+</option>
                         <option value="CRUNCHYROLL">Crunchyroll</option>
                         <option value="FLUJO TV">Flujo TV</option>
                         <option value="VIKI RAKUTEN">Viki Rakuten</option>
@@ -65,8 +67,6 @@
                         <option value="TELELATINO">Telelatino</option>
                         <option value="CANVA PRO">Canva Pro</option>
                         <option value="CAPCUT">Capcut</option>
-                        <option value="MAX">Max</option>
-                        <option value="DISNEY+">Disney+</option>
                     </select>
 
                     <div class="grid grid-cols-2 gap-2">
@@ -225,10 +225,7 @@
         }
 
         function enviarAccesoWS(nombreCliente, idFila) {
-            // Buscamos todos los servicios de ese cliente
             const servicios = clientesGlobal.filter(x => x[1].toLowerCase() === nombreCliente.toLowerCase());
-            
-            // Si por alguna razón la búsqueda múltiple falla, usamos al menos el de la fila actual
             const datosFinales = servicios.length > 0 ? servicios : [clientesGlobal.find(x => x[0] == idFila)];
 
             let mensaje = `*⭐ SERVICIOS ACTIVOS - ${nombreCliente.toUpperCase()} ⭐*%0A`;
