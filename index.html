@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Planet - Panel Oficial</title>
+    <title>Streaming Planet - Panel dd-MM-yyyy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -15,83 +15,65 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs md:text-sm">
+<body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs">
     <div class="max-w-7xl mx-auto">
         
         <header class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
-                <p class="text-[9px] text-blue-400 uppercase font-black tracking-widest mb-1">Hoy</p>
-                <p id="gananciaDia" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
+                <p class="text-[9px] text-blue-400 font-black uppercase mb-1">Hoy</p>
+                <p id="gananciaDia" class="text-xl font-black">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
-                <p class="text-[9px] text-purple-400 uppercase font-black tracking-widest mb-1">Semana</p>
-                <p id="gananciaSemana" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
+                <p class="text-[9px] text-purple-400 font-black uppercase mb-1">Semana</p>
+                <p id="gananciaSemana" class="text-xl font-black">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
-                <p class="text-[9px] text-green-400 uppercase font-black tracking-widest mb-1">Mes</p>
-                <p id="gananciaMes" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
+                <p class="text-[9px] text-green-400 font-black uppercase mb-1">Mes</p>
+                <p id="gananciaMes" class="text-xl font-black">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xl text-center">
-                <p class="text-[9px] text-yellow-500 uppercase font-black tracking-widest mb-1">Año 2026</p>
-                <p id="gananciaAnio" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
+                <p class="text-[9px] text-yellow-500 font-black uppercase mb-1">Año 2026</p>
+                <p id="gananciaAnio" class="text-xl font-black">$0.00</p>
             </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <div class="lg:col-span-1 bg-slate-900 p-6 rounded-2xl border border-slate-800 h-fit sticky top-4">
-                <h2 class="text-lg font-bold mb-4 text-blue-400 flex items-center justify-between">
-                    <span>📝 Registro</span>
-                    <div class="flex items-center space-x-2 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800">
-                        <span class="text-[9px] text-slate-400 uppercase font-bold italic">Combo</span>
-                        <input type="checkbox" id="mantenerDatos" class="w-4 h-4 accent-blue-500 cursor-pointer">
-                    </div>
-                </h2>
+                <h2 class="text-lg font-bold mb-4 text-blue-400">📝 Registro</h2>
                 <div class="space-y-3">
-                    <input id="nombre" type="text" placeholder="NOMBRE CLIENTE" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500 font-bold uppercase">
-                    <input id="telefono" type="text" placeholder="WhatsApp" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none">
-                    
-                    <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none text-slate-300 font-bold">
+                    <input id="nombre" type="text" placeholder="NOMBRE CLIENTE" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none font-bold uppercase">
+                    <input id="telefono" type="text" placeholder="WhatsApp (58412...)" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none">
+                    <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none font-bold">
                         <option value="NETFLIX">Netflix</option>
                         <option value="PRIME VIDEO">Prime Video</option>
                         <option value="PARAMOUNT+">Paramount Plus</option>
                         <option value="MAX">Max</option>
                         <option value="DISNEY+">Disney+</option>
                         <option value="CRUNCHYROLL">Crunchyroll</option>
-                        <option value="FLUJO TV">Flujo TV</option>
-                        <option value="VIKI RAKUTEN">Viki Rakuten</option>
                         <option value="YOUTUBE PREMIUM">YouTube Premium</option>
                         <option value="SPOTIFY PREMIUM">Spotify Premium</option>
-                        <option value="APPLE TV">Apple TV</option>
-                        <option value="IPTV">IPTV</option>
-                        <option value="TELELATINO">Telelatino</option>
                         <option value="CANVA PRO">Canva Pro</option>
-                        <option value="CAPCUT">Capcut</option>
                     </select>
-
                     <div class="grid grid-cols-2 gap-2">
-                        <input id="costo" type="number" step="0.01" placeholder="Costo $" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5">
+                        <input id="costo" type="number" step="0.01" placeholder="Costo $" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 italic">
                         <input id="precio" type="number" step="0.01" placeholder="Venta $" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 font-bold text-green-400">
                     </div>
-
-                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-2">
-                        <input id="correo" type="text" placeholder="Correo" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
-                        <input id="clave" type="text" placeholder="Contraseña" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                    <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 space-y-2 text-[10px]">
+                        <input id="correo" type="text" placeholder="Correo" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5">
+                        <input id="clave" type="text" placeholder="Clave" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5">
                         <div class="grid grid-cols-2 gap-2">
-                            <input id="perfil" type="text" placeholder="Perfil" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
-                            <input id="pin" type="text" placeholder="PIN" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs">
+                            <input id="perfil" type="text" placeholder="Perfil" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5">
+                            <input id="pin" type="text" placeholder="PIN" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5">
                         </div>
                     </div>
-                    
-                    <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-300 font-bold">
-
-                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg shadow-lg transition uppercase tracking-wider">Guardar Registro</button>
-                    <button onclick="limpiarFormulario()" class="w-full bg-slate-800 text-slate-400 text-[10px] py-1 rounded hover:bg-slate-700">LIMPIAR TODO</button>
+                    <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 font-bold">
+                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-3 rounded-lg shadow-lg uppercase">Guardar Registro</button>
                 </div>
             </div>
 
-            <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
-                <div class="p-5 border-b border-slate-800 bg-slate-900/50">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none">
+            <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+                <div class="p-4 border-b border-slate-800">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 outline-none">
                 </div>
                 <div class="overflow-x-auto max-h-[600px]">
                     <table class="w-full text-left">
@@ -104,8 +86,8 @@
                                 <th class="p-4"></th>
                             </tr>
                         </thead>
-                        <tbody id="cuerpoTabla" class="divide-y divide-slate-800">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase italic">Conectando...</td></tr>
+                        <tbody id="cuerpoTabla" class="divide-y divide-slate-800 text-[11px]">
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic uppercase">Cargando datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -114,7 +96,6 @@
     </div>
 
     <script>
-        // ESTA ES TU API_URL
         const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
         let clientesGlobal = [];
 
@@ -130,7 +111,7 @@
             const btn = document.getElementById('btnGuardar');
             const data = {
                 id: Date.now(),
-                nombre: document.getElementById('nombre').value.trim(),
+                nombre: document.getElementById('nombre').value.trim().toUpperCase(),
                 telefono: document.getElementById('telefono').value.trim(),
                 servicio: document.getElementById('servicio').value,
                 costo: document.getElementById('costo').value || 0,
@@ -141,77 +122,68 @@
                 pin: document.getElementById('pin').value.trim(),
                 vencimiento: document.getElementById('vencimiento').value
             };
-            if(!data.nombre || !data.vencimiento) return alert("⚠️ Nombre y Fecha son obligatorios");
-            btn.disabled = true; btn.innerText = "PROCESANDO...";
+            if(!data.nombre || !data.vencimiento) return alert("⚠️ Nombre y Fecha obligatorios");
+            btn.disabled = true; btn.innerText = "REGISTRANDO...";
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
             location.reload();
         }
 
         async function renovarCliente(id) {
             if(!confirm("¿Renovar este servicio por 28 días desde hoy?")) return;
-            const btn = event.target;
-            btn.innerText = "...";
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
-            alert("✅ Renovado por 28 días");
+            alert("✅ Renovado exitosamente");
             location.reload();
         }
 
         function renderizarTabla() {
             const tabla = document.getElementById('cuerpoTabla');
             const busqueda = document.getElementById('buscador').value.toLowerCase();
-            let gDia = 0, gSemana = 0, gMes = 0, gAnio = 0;
+            let gDia = 0;
             const hoy = new Date(); hoy.setHours(0,0,0,0);
 
             let filtrados = clientesGlobal.filter(c => c[1].toLowerCase().includes(busqueda) || c[3].toLowerCase().includes(busqueda));
 
             let html = "";
             filtrados.forEach(c => {
-                let fechaRaw = c[10].toString().split('T')[0];
-                let partes = fechaRaw.split('-');
-                let fechaV = new Date(partes[0], partes[1] - 1, partes[2]);
-                const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
-                const fechaRegistro = new Date(parseInt(c[0]));
-                const ganancia = (parseFloat(c[5]) - parseFloat(c[4])) || 0;
-
-                if(fechaRegistro.toDateString() === hoy.toDateString()) gDia += ganancia;
+                // Lógica para procesar fecha dd-MM-yyyy
+                const partes = c[10].split('-'); // Divide 27-02-2026
+                const fechaV = new Date(partes[2], partes[1] - 1, partes[0]); // año, mes(0-11), día
                 
-                let badge = dias <= 0 ? "text-red-500 border-red-500/40 bg-red-500/10" : (dias <= 3 ? "text-yellow-400 border-yellow-400/30 bg-yellow-400/10" : "text-green-400 border-green-400/20 bg-green-400/10");
+                const dias = Math.ceil((fechaV - hoy) / (1000 * 60 * 60 * 24));
+                const ganancia = (parseFloat(c[5]) - parseFloat(c[4])) || 0;
+                const fechaRegistro = new Date(parseInt(c[0]));
+                if(fechaRegistro.toDateString() === hoy.toDateString()) gDia += ganancia;
+
+                let badge = dias <= 0 ? "text-red-500 border-red-500/30 bg-red-500/10" : (dias <= 3 ? "text-yellow-400 border-yellow-400/30 bg-yellow-400/10" : "text-green-400 border-green-400/30 bg-green-400/10");
                 
                 html += `
                     <tr class="hover:bg-slate-800/40 transition">
-                        <td class="p-4 font-bold uppercase text-blue-400 text-xs">${c[1]}<br><span class="text-slate-500 text-[10px]">${c[3]}</span></td>
-                        <td class="p-4 text-center"><span class="px-2 py-1 rounded-full text-[9px] border ${badge}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span></td>
-                        <td class="p-4 text-[10px] text-slate-500 font-mono">${c[10].split('T')[0]}</td>
+                        <td class="p-4 font-bold uppercase text-blue-400">${c[1]}<br><span class="text-slate-500 text-[9px] font-black">${c[3]}</span></td>
+                        <td class="p-4 text-center"><span class="px-2 py-1 rounded-full border ${badge}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span></td>
+                        <td class="p-4 text-slate-500 font-mono font-bold">${c[10]}</td>
                         <td class="p-4 text-center space-x-1 flex justify-center">
-                            <button onclick="enviarAccesoWS('${c[1]}', '${c[0]}')" class="btn-ws bg-blue-600 text-white px-2 py-2 rounded-lg text-[9px] font-black uppercase">Entrega</button>
-                            <button onclick="renovarCliente('${c[0]}')" class="btn-ws bg-indigo-600 text-white px-2 py-2 rounded-lg text-[9px] font-black uppercase">Renovar</button>
-                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-2 py-2 rounded-lg text-[9px] font-black uppercase">Cobro</button>
+                            <button onclick="enviarAccesoWS('${c[0]}')" class="btn-ws bg-blue-600 text-white px-2 py-1.5 rounded-lg font-black uppercase shadow-lg">Entregar</button>
+                            <button onclick="renovarCliente('${c[0]}')" class="btn-ws bg-indigo-600 text-white px-2 py-1.5 rounded-lg font-black uppercase shadow-lg">Renovar</button>
+                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-2 py-1.5 rounded-lg font-black uppercase shadow-lg">Cobrar</button>
                         </td>
-                        <td class="p-4"><button onclick="eliminarCliente('${c[0]}')" class="text-slate-700 hover:text-red-500">🗑️</button></td>
-                    </tr>
-                `;
+                        <td class="p-4"><button onclick="eliminarCliente('${c[0]}')" class="text-slate-800 hover:text-red-500">🗑️</button></td>
+                    </tr>`;
             });
-            tabla.innerHTML = html;
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center">No hay registros</td></tr>';
             document.getElementById('gananciaDia').innerText = `$${gDia.toFixed(2)}`;
         }
 
-        function enviarAccesoWS(nombre, id) {
-            const servicios = clientesGlobal.filter(x => x[1].toLowerCase() === nombre.toLowerCase());
-            let mensaje = `*⭐ SERVICIOS ACTIVOS - ${nombre.toUpperCase()} ⭐*%0A_Gracias por tu compra en Streaming planet steaming_%0A%0A`;
-            servicios.forEach(c => {
-                mensaje += `*------------------------------*%0A📺 *SERVICIO:* ${c[3]}%0A👤 *Usuario:* ${c[6]}%0A🔑 *Clave:* ${c[7]}%0A👤 *Perfil:* ${c[8]}%0A📌 *PIN:* ${c[9]}%0A🗓️ *Vence:* ${c[10].split('T')[0]}%0A`;
-            });
-            mensaje += `*------------------------------*%0A%0A*⚠️ REGLAS IMPORTANTES:*%0A- No cambiar datos.%0A- Disfruta 🍿`;
-            window.open(`https://web.whatsapp.com/send?phone=${servicios[0][2]}&text=${mensaje}`, '_blank');
+        function enviarAccesoWS(id) {
+            const c = clientesGlobal.find(x => x[0] == id);
+            let mensaje = `*⭐ SERVICIO ACTIVO - ${c[1]} ⭐*%0A📺 *SERVICIO:* ${c[3]}%0A👤 *Usuario:* ${c[6]}%0A🔑 *Clave:* ${c[7]}%0A👤 *Perfil:* ${c[8]}%0A📌 *PIN:* ${c[9]}%0A🗓️ *Vence:* ${c[10]}%0A%0A*Streaming Planet* 🍿`;
+            window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${mensaje}`, '_blank');
         }
 
         function enviarCobroWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
-            const mensaje = `Hola *${c[1]}*, tu servicio de *${c[3]}* vence pronto. ¿Renovamos? 🚀`;
+            const mensaje = `Hola *${c[1]}*, tu servicio de *${c[3]}* vence pronto (${c[10]}). ¿Deseas renovar? 🚀`;
             window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${mensaje}`, '_blank');
         }
-
-        function limpiarFormulario() { document.querySelectorAll('input').forEach(i => i.value = ""); }
 
         async function eliminarCliente(id) {
             if(!confirm("¿Eliminar?")) return;
