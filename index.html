@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Planet - Panel Oficial</title>
+    <title>Streaming Planet - Panel Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .btn-ws { transition: all 0.2s; }
@@ -13,8 +13,6 @@
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        .status-red { animation: glow-red 1.5s infinite; }
-        @keyframes glow-red { 0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.2); } 50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); } }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs md:text-sm">
@@ -55,7 +53,8 @@
                     <select id="servicio" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none text-slate-300 font-bold">
                         <option value="NETFLIX">Netflix</option>
                         <option value="PRIME VIDEO">Prime Video</option>
-                        <option value="PARAMOUNT+">Paramount Plus</option> <option value="MAX">Max</option>
+                        <option value="PARAMOUNT+">Paramount Plus</option>
+                        <option value="MAX">Max</option>
                         <option value="DISNEY+">Disney+</option>
                         <option value="CRUNCHYROLL">Crunchyroll</option>
                         <option value="FLUJO TV">Flujo TV</option>
@@ -91,8 +90,8 @@
             </div>
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-lg">
-                <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row gap-2">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
+                <div class="p-5 border-b border-slate-800 bg-slate-900/50">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition">
                 </div>
                 <div class="overflow-x-auto max-h-[600px]">
                     <table class="w-full text-left border-separate border-spacing-0">
@@ -106,7 +105,7 @@
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase italic">Sincronizando...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-black uppercase italic">Cargando datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -115,7 +114,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
+        const API_URL = "TU_NUEVA_URL_DE_APPS_SCRIPT_AQUI"; // REEMPLAZA ESTO
         let clientesGlobal = [];
 
         async function cargarDatos() {
@@ -151,22 +150,11 @@
                 document.getElementById('precio').value = "";
                 document.getElementById('perfil').value = "";
                 document.getElementById('pin').value = "";
-                btn.disabled = false; btn.innerText = "GUARDAR SIGUIENTE";
+                btn.disabled = false; btn.innerText = "SIGUIENTE COMBO";
                 cargarDatos();
             } else {
                 location.reload();
             }
-        }
-
-        function limpiarFormulario() {
-            document.querySelectorAll('input').forEach(i => i.value = "");
-            document.getElementById('mantenerDatos').checked = false;
-        }
-
-        async function eliminarCliente(id) {
-            if(!confirm("¿Eliminar registro?")) return;
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
-            location.reload();
         }
 
         function renderizarTabla() {
@@ -198,7 +186,7 @@
             let html = "";
             filtrados.forEach(item => {
                 const c = item.raw; const dias = item.dias;
-                let badge = dias <= 0 ? "text-red-500 border-red-500/40 bg-red-500/10 status-red font-black" : (dias <= 3 ? "text-yellow-400 border-yellow-400/30 bg-yellow-400/10" : "text-green-400 border-green-400/20 bg-green-400/10");
+                let badge = dias <= 0 ? "text-red-500 border-red-500/40 bg-red-500/10 font-black" : (dias <= 3 ? "text-yellow-400 border-yellow-400/30 bg-yellow-400/10" : "text-green-400 border-green-400/20 bg-green-400/10");
                 html += `
                     <tr class="hover:bg-slate-800/40 transition">
                         <td class="p-4">
@@ -209,9 +197,10 @@
                             <span class="px-3 py-1.5 rounded-full text-[9px] border ${badge}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span>
                         </td>
                         <td class="p-4 text-[10px] text-slate-500 font-mono font-bold">${c[10].split('T')[0]}</td>
-                        <td class="p-4 text-center space-x-2 flex justify-center">
-                            <button onclick="enviarAccesoWS('${c[1]}', '${c[0]}')" class="btn-ws bg-blue-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
-                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-3 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Cobrar</button>
+                        <td class="p-4 text-center space-x-1 flex justify-center">
+                            <button onclick="enviarAccesoWS('${c[1]}', '${c[0]}')" class="btn-ws bg-blue-600 text-white px-2 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Entregar</button>
+                            <button onclick="renovarCliente('${c[0]}')" class="btn-ws bg-indigo-600 text-white px-2 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Renovar</button>
+                            <button onclick="enviarCobroWS('${c[0]}')" class="btn-ws bg-green-600 text-white px-2 py-2 rounded-lg text-[9px] font-black uppercase shadow-lg">Cobrar</button>
                         </td>
                         <td class="p-4 text-right"><button onclick="eliminarCliente('${c[0]}')" class="text-slate-800 hover:text-red-500 transition text-lg">🗑️</button></td>
                     </tr>
@@ -224,37 +213,40 @@
             document.getElementById('gananciaAnio').innerText = `$${gAnio.toFixed(2)}`;
         }
 
+        async function renovarCliente(id) {
+            if(!confirm("¿Renovar este servicio por 28 días desde hoy?")) return;
+            const btn = event.target;
+            btn.innerText = "...";
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
+            alert("✅ Renovación Exitosa");
+            location.reload();
+        }
+
         function enviarAccesoWS(nombreCliente, idFila) {
             const servicios = clientesGlobal.filter(x => x[1].toLowerCase() === nombreCliente.toLowerCase());
-            const datosFinales = servicios.length > 0 ? servicios : [clientesGlobal.find(x => x[0] == idFila)];
-
-            let mensaje = `*⭐ SERVICIOS ACTIVOS - ${nombreCliente.toUpperCase()} ⭐*%0A`;
-            mensaje += `_Gracias por tu compra en Streaming planet steaming_%0A%0A`;
-
-            datosFinales.forEach((c) => {
-                mensaje += `*------------------------------*%0A`;
-                mensaje += `📺 *SERVICIO:* ${c[3]}%0A`;
-                mensaje += `👤 *Usuario:* ${c[6]}%0A`;
-                mensaje += `🔑 *Clave:* ${c[7]}%0A`;
-                mensaje += `👤 *Perfil:* ${c[8]}%0A`;
-                mensaje += `📌 *PIN:* ${c[9]}%0A`;
-                mensaje += `🗓️ *Vence:* ${c[10].split('T')[0]}%0A`;
+            const datos = servicios.length > 0 ? servicios : [clientesGlobal.find(x => x[0] == idFila)];
+            let mensaje = `*⭐ SERVICIOS ACTIVOS - ${nombreCliente.toUpperCase()} ⭐*%0A_Gracias por tu compra en Streaming planet steaming_%0A%0A`;
+            datos.forEach((c) => {
+                mensaje += `*------------------------------*%0A📺 *SERVICIO:* ${c[3]}%0A👤 *Usuario:* ${c[6]}%0A🔑 *Clave:* ${c[7]}%0A👤 *Perfil:* ${c[8]}%0A📌 *PIN:* ${c[9]}%0A🗓️ *Vence:* ${c[10].split('T')[0]}%0A`;
             });
-
-            mensaje += `*------------------------------*%0A%0A`;
-            mensaje += `*⚠️ REGLAS IMPORTANTES:*%0A`;
-            mensaje += `- No cambiar datos de la cuenta.%0A`;
-            mensaje += `- Usar solo el perfil asignado.%0A`;
-            mensaje += `- Disfruta tu programación 🍿`;
-
-            const tlf = datosFinales[0][2];
-            window.open(`https://web.whatsapp.com/send?phone=${tlf}&text=${mensaje}`, '_blank');
+            mensaje += `*------------------------------*%0A%0A*⚠️ REGLAS IMPORTANTES:*%0A- No cambiar datos.%0A- Usar solo su perfil.%0A- Disfruta 🍿`;
+            window.open(`https://web.whatsapp.com/send?phone=${datos[0][2]}&text=${mensaje}`, '_blank');
         }
 
         function enviarCobroWS(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const mensaje = `Hola *${c[1]}*, te saluda *Streaming Planet Streaming*. Tu servicio de *${c[3]}* vence pronto. ¿Deseas renovar? 🚀`;
             window.open(`https://web.whatsapp.com/send?phone=${c[2]}&text=${mensaje}`, '_blank');
+        }
+
+        function limpiarFormulario() {
+            document.querySelectorAll('input').forEach(i => i.value = "");
+        }
+
+        async function eliminarCliente(id) {
+            if(!confirm("¿Eliminar?")) return;
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
+            location.reload();
         }
 
         window.onload = cargarDatos;
