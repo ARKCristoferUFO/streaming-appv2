@@ -11,7 +11,7 @@
         .status-red { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
         .status-yellow { background: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.4); }
         .status-green { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
-        .btn-ws { transition: all 0.2s; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-ws { transition: transform 0.1s active; cursor: pointer; }
         .btn-ws:active { transform: scale(0.95); }
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
@@ -21,26 +21,26 @@
     <div class="max-w-7xl mx-auto">
         
         <header class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 font-black">
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
-                <p class="text-[9px] text-blue-400 uppercase mb-1 font-bold">Ganancia Hoy</p>
-                <p id="gananciaDia" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg font-bold">
+                <p class="text-[9px] text-blue-400 uppercase mb-1">Ganancia Hoy</p>
+                <p id="gananciaDia" class="text-xl">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
-                <p class="text-[9px] text-purple-400 uppercase mb-1 font-bold">Semana</p>
-                <p id="gananciaSemana" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg font-bold">
+                <p class="text-[9px] text-purple-400 uppercase mb-1">Esta Semana</p>
+                <p id="gananciaSemana" class="text-xl">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
-                <p class="text-[9px] text-green-400 uppercase mb-1 font-bold">Mes</p>
-                <p id="gananciaMes" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg font-bold">
+                <p class="text-[9px] text-green-400 uppercase mb-1">Este Mes</p>
+                <p id="gananciaMes" class="text-xl">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
-                <p class="text-[9px] text-yellow-500 uppercase mb-1 font-bold">Año 2026</p>
-                <p id="gananciaAnio" class="text-xl font-black text-white">$0.00</p>
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg font-bold">
+                <p class="text-[9px] text-yellow-500 uppercase mb-1">Año 2026</p>
+                <p id="gananciaAnio" class="text-xl">$0.00</p>
             </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div class="lg:col-span-1 bg-slate-900 p-5 rounded-2xl border border-slate-800 h-fit sticky top-4 shadow-2xl">
+            <div class="lg:col-span-1 bg-slate-900 p-5 rounded-2xl border border-slate-800 h-fit sticky top-4">
                 <h2 class="text-blue-400 font-bold mb-4 uppercase tracking-widest flex justify-between items-center text-[10px]">
                     <span>Registro Cliente</span>
                     <label class="text-[9px] text-slate-500 flex items-center gap-1 cursor-pointer font-bold">
@@ -73,22 +73,22 @@
             </div>
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-                <div class="p-4 border-b border-slate-800">
+                <div class="p-4 border-b border-slate-800 flex justify-between items-center">
                     <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente o servicio..." class="w-full max-w-md bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 outline-none focus:border-blue-500">
                 </div>
                 <div class="overflow-x-auto max-h-[700px]">
                     <table class="w-full text-left">
                         <thead class="bg-slate-950 text-slate-500 uppercase text-[9px] tracking-widest sticky top-0 z-10">
                             <tr>
-                                <th class="p-4 border-b">Cliente / Servicio</th>
-                                <th class="p-4 text-center border-b">Estado</th>
+                                <th class="p-4">Cliente / Servicio</th>
+                                <th class="p-4 text-center">Estado</th>
                                 <th class="p-4 border-b">Vencimiento</th>
-                                <th class="p-4 text-center border-b">Acciones</th>
-                                <th class="p-4 text-center border-b"></th>
+                                <th class="p-4 text-center">Acciones</th>
+                                <th class="p-4 text-center"></th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic uppercase">Cargando datos...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic uppercase">Cargando base de datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -147,10 +147,6 @@
                 let clse = dias <= 0 ? "status-red font-black" : (dias <= 3 ? "status-yellow font-bold" : "status-green font-bold");
                 let fechaTxt = isNaN(fechaV.getTime()) ? "ERROR" : fechaV.toISOString().split('T')[0];
 
-                const tel = c[2].replace(/\+/g, '').replace(/\s/g, '');
-                const msgAcceso = generarMensajeAcceso(c, fechaTxt);
-                const msgCobro = generarMensajeCobro(c, fechaTxt);
-
                 html += `
                     <tr class="hover:bg-slate-800/40 transition-colors border-b border-slate-800/50 text-[10px]">
                         <td class="p-4">
@@ -163,10 +159,10 @@
                             </span>
                         </td>
                         <td class="p-4 text-slate-500 font-mono font-bold">${fechaTxt}</td>
-                        <td class="p-4 text-center flex justify-center gap-1">
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${msgAcceso}" target="_blank" class="bg-blue-600 px-3 py-1.5 rounded text-[8px] font-black uppercase btn-ws text-white">Entrega</a>
-                            <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-3 py-1.5 rounded text-[8px] font-black uppercase btn-ws text-white">Renovar</button>
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${msgCobro}" target="_blank" class="bg-green-600 px-3 py-1.5 rounded text-[8px] font-black uppercase btn-ws text-white">Cobro</a>
+                        <td class="p-4 text-center space-x-1 flex justify-center">
+                            <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-2 py-1 rounded text-[8px] font-black uppercase btn-ws shadow-md text-white">Entrega</button>
+                            <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-2 py-1 rounded text-[8px] font-black uppercase btn-ws shadow-md text-white">Renovar</button>
+                            <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-2 py-1 rounded text-[8px] font-black uppercase btn-ws shadow-md text-white">Cobro</button>
                         </td>
                         <td class="p-4 text-center">
                             <button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 transition-colors">🗑️</button>
@@ -174,19 +170,11 @@
                     </tr>`;
             });
 
-            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center">Sin resultados</td></tr>';
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center">No hay registros</td></tr>';
             document.getElementById('gananciaDia').innerText = `$${gDia.toFixed(2)}`;
             document.getElementById('gananciaSemana').innerText = `$${gSemana.toFixed(2)}`;
             document.getElementById('gananciaMes').innerText = `$${gMes.toFixed(2)}`;
             document.getElementById('gananciaAnio').innerText = `$${gAnio.toFixed(2)}`;
-        }
-
-        function generarMensajeAcceso(c, fecha) {
-            return encodeURIComponent(`⭐ *SERVICIOS ACTIVOS - ${c[1]}* ⭐\nGracias por tu compra en *Planet Streaming* 🍿\n------------------------------\n📺 *SERVICIO:* ${c[3]}\n👤 *Usuario:* ${c[6]}\n🔑 *Clave:* ${c[7]}\n👤 *Perfil:* ${c[8]}\n📌 *PIN:* ${c[9]}\n🗓️ *Vence:* ${fecha}\n------------------------------\n\n⚠️ *REGLAS IMPORTANTES:*\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.`);
-        }
-
-        function generarMensajeCobro(c, fecha) {
-            return encodeURIComponent(`Hola *${c[1]}*, te saludamos de *Planet Streaming*. Tu servicio de *${c[3]}* vence pronto (${fecha}). ¿Deseas renovar para no perder tu perfil? 🚀`);
         }
 
         async function guardarEnGoogle() {
@@ -204,8 +192,8 @@
                 pin: document.getElementById('pin').value.trim(),
                 vencimiento: document.getElementById('vencimiento').value
             };
-            if(!data.nombre || !data.vencimiento) return alert("⚠️ Nombre y Fecha obligatorios");
-            btn.disabled = true; btn.innerText = "REGISTRANDO...";
+            if(!data.nombre || !data.vencimiento) return alert("⚠️ Datos incompletos");
+            btn.disabled = true; btn.innerText = "ESPERE...";
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
             
             if(document.getElementById('mantenerDatos').checked) {
@@ -225,6 +213,38 @@
             if(!confirm("¿Borrar permanentemente?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
+        }
+
+        function wsAcceso(id) {
+            const c = clientesGlobal.find(x => x[0] == id);
+            const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
+            
+            // MENSAJE SOLICITADO CON EMOJIS CODIFICADOS
+            const msj = `*PLANET STREAMING*%0A%0A⭐ *SERVICIOS ACTIVOS - ${c[1]}* ⭐%0A------------------------------%0A📺 *SERVICIO:* ${c[3]}%0A👤 *Usuario:* ${c[6]}%0A🔑 *Clave:* ${c[7]}%0A👤 *Perfil:* ${c[8]}%0A📌 *PIN:* ${c[9]}%0A🗓️ *Vence:* ${fechaV}%0A------------------------------%0A%0A⚠️ *REGLAS IMPORTANTES:*%0A- No cambiar datos de la cuenta.%0A- Usar solo el perfil asignado.%0A%0AGracias por tu compra en *Planet Streaming* 🍿`;
+            
+            abrirWS(c[2], msj);
+        }
+
+        function wsCobro(id) {
+            const c = clientesGlobal.find(x => x[0] == id);
+            const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
+            const msj = `Hola *${c[1]}*, te saludamos de *Planet Streaming*. Tu servicio de *${c[3]}* vence pronto (${fechaV}). ¿Deseas renovar para no perder tu perfil? 🚀`;
+            abrirWS(c[2], msj);
+        }
+
+        function abrirWS(tel, msj) {
+            const fTel = tel.replace(/\+/g, '').replace(/\s/g, '');
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                const appUrl = `whatsapp://send?phone=${fTel}&text=${msj}`;
+                const webUrl = `https://wa.me/${fTel}?text=${msj}`;
+                window.location.href = appUrl;
+                setTimeout(() => { if (!document.hidden) window.open(webUrl, '_blank'); }, 600);
+            } else {
+                const pcUrl = `https://web.whatsapp.com/send?phone=${fTel}&text=${msj}`;
+                window.open(pcUrl, '_blank');
+            }
         }
 
         window.onload = cargarDatos;
