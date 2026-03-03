@@ -11,33 +11,34 @@
         .status-red { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
         .status-yellow { background: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.4); }
         .status-green { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
-        .btn-ws { transition: transform 0.1s; }
+        .btn-ws { transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-ws:hover { filter: brightness(1.2); transform: translateY(-1px); }
         .btn-ws:active { transform: scale(0.95); }
         .tabla-contenedor { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { min-width: 850px; }
+        table { min-width: 900px; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 p-4 font-sans text-xs">
     <div class="max-w-[1600px] mx-auto">
         
-        <header class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 font-black">
-            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center shadow-lg">
+        <header class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 font-black text-center">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg">
                 <p class="text-[9px] text-blue-400 uppercase mb-1">Ventas Hoy</p>
                 <p id="gananciaDia" class="text-xl">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-red-900/40 text-center shadow-lg">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-red-900/40 shadow-lg">
                 <p class="text-[9px] text-red-400 uppercase mb-1">Inversión Hoy</p>
                 <p id="costoDia" class="text-xl text-red-400">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-emerald-500/40 text-center shadow-lg">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-emerald-500/40 shadow-lg">
                 <p class="text-[9px] text-emerald-400 uppercase mb-1">Caja Neta Hoy</p>
                 <p id="netoDia" class="text-xl text-emerald-400">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-purple-900/40 text-center shadow-lg">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-purple-900/40 shadow-lg">
                 <p class="text-[9px] text-purple-400 uppercase mb-1">Utilidad Mes</p>
                 <p id="gananciaMes" class="text-xl">$0.00</p>
             </div>
-            <div class="bg-slate-900 p-4 rounded-2xl border border-yellow-500 text-center shadow-lg">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-yellow-500 shadow-lg">
                 <p class="text-[9px] text-yellow-500 uppercase mb-1">Balance 2026</p>
                 <p id="gananciaAnio" class="text-xl text-yellow-500">$0.00</p>
             </div>
@@ -77,8 +78,8 @@
             </div>
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-                <div class="p-4 border-b border-slate-800 flex items-center gap-2">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar cliente o servicio..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white outline-none focus:border-blue-500 font-medium">
+                <div class="p-4 border-b border-slate-800">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente o servicio..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white outline-none focus:border-blue-500 font-medium">
                 </div>
                 <div class="tabla-contenedor max-h-[600px]">
                     <table class="w-full text-left">
@@ -88,11 +89,11 @@
                                 <th class="p-4 text-center">Estado</th>
                                 <th class="p-4 text-center">Vence</th>
                                 <th class="p-4 text-center">Acciones</th>
-                                <th class="p-4 text-center">X</th>
+                                <th class="p-4 text-center">Eliminar</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800 text-white font-bold uppercase">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic text-xs uppercase">Conectando...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic text-xs uppercase">Cargando base de datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -157,19 +158,19 @@
 
                 html += `
                     <tr class="hover:bg-slate-800/40 border-b border-slate-800/50 transition-colors">
-                        <td class="p-4 text-blue-400 font-bold uppercase">${c[1]}<br><span class="text-slate-500 text-[9px] font-black">${c[3]}</span></td>
+                        <td class="p-4 text-blue-400 font-bold uppercase line-clamp-1">${c[1]}<br><span class="text-slate-500 text-[9px] font-black">${c[3]}</span></td>
                         <td class="p-4 text-center">
                             <span class="px-2 py-1 rounded-full border text-[9px] uppercase font-black ${clse}">
-                                ${dias <= 0 ? 'VENCIDO' : dias + ' D\u00CDAS'}
+                                ${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}
                             </span>
                         </td>
                         <td class="p-4 text-center text-slate-500 font-mono text-[10px]">${fechaTxt}</td>
                         <td class="p-4 text-center space-x-1">
-                            <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md italic">Entrega</button>
-                            <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md italic">Renovar</button>
-                            <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md italic">Cobro</button>
+                            <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-3 py-1.5 rounded text-[10px] font-black uppercase btn-ws shadow-md">🚀 Entrega</button>
+                            <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-3 py-1.5 rounded text-[10px] font-black uppercase btn-ws shadow-md">♻️ Renovar</button>
+                            <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-3 py-1.5 rounded text-[10px] font-black uppercase btn-ws shadow-md">💰 Cobro</button>
                         </td>
-                        <td class="p-4 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 font-bold">&#10006;</button></td>
+                        <td class="p-4 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-700 hover:text-red-500 font-bold transition-colors">✖</button></td>
                     </tr>`;
             });
 
@@ -203,40 +204,36 @@
         }
 
         async function renovar(id) {
-            if(!confirm("\u00BFProlongar servicio por 30 d\u00EDas?")) return;
+            if(!confirm("¿Deseas renovar este servicio por 30 días adicionales?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
             location.reload();
         }
 
         async function eliminar(id) {
-            if(!confirm("\u00BFEliminar?")) return;
+            if(!confirm("¿Eliminar registro?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
 
-        // --- FUNCIONES WHATSAPP (CORREGIDAS PARA PC) ---
+        // --- WHATSAPP CON EMOJIS CODIFICADOS PARA PC Y MÓVIL ---
         function wsAcceso(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
             
-            const star = "\u2B50"; const tv = "\uD83D\uDCFA"; const user = "\uD83D\uDC64";
-            const key = "\uD83D\uDD11"; const pin = "\uD83D\uDCCC"; const cal = "\uD83D\uDDD3";
-            const warn = "\u26A0\uFE0F"; const popcorn = "\uD83C\uDF7F";
-
-            const msj = `${star} *SERVICIOS ACTIVOS - ${c[1]}* ${star}\n` +
+            const msj = `⭐ *SERVICIOS ACTIVOS - ${c[1]}* ⭐\n` +
                         `Gracias por tu compra en *Streaming Planet*\n\n` +
                         `------------------------------\n` +
-                        `${tv} *SERVICIO:* ${c[3]}\n` +
-                        `${user} *Usuario:* ${c[6]}\n` +
-                        `${key} *Clave:* ${c[7]}\n` +
-                        `${user} *Perfil:* ${c[8]}\n` +
-                        `${pin} *PIN:* ${c[9]}\n` +
-                        `${cal} *Vence:* ${fechaV}\n` +
+                        `📺 *SERVICIO:* ${c[3]}\n` +
+                        `👤 *Usuario:* ${c[6]}\n` +
+                        `🔑 *Clave:* ${c[7]}\n` +
+                        `👤 *Perfil:* ${c[8]}\n` +
+                        `📌 *PIN:* ${c[9]}\n` +
+                        `🗓️ *Vence:* ${fechaV}\n` +
                         `------------------------------\n\n` +
-                        `${warn} *REGLAS IMPORTANTES:*\n` +
+                        `⚠️ *REGLAS IMPORTANTES:*\n` +
                         `- No cambiar datos de la cuenta.\n` +
                         `- Usar solo el perfil asignado.\n` +
-                        `- Disfruta tu programación ${popcorn}`;
+                        `- Disfruta tu programación 🍿`;
             
             abrirWS(c[2], msj);
         }
@@ -244,18 +241,14 @@
         function wsCobro(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
-            const rocket = "\uD83D\uDE80";
-            const msj = `Hola *${c[1]}*, te saludamos de *Streaming Planet*. Tu servicio de *${c[3]}* vence pronto (${fechaV}). ${rocket} ¿Deseas renovar para no perder tu perfil?`;
+            const msj = `Hola *${c[1]}*, te saludamos de *Streaming Planet*. Tu servicio de *${c[3]}* vence pronto (${fechaV}). 🚀 ¿Deseas renovar para no perder tu perfil?`;
             abrirWS(c[2], msj);
         }
 
         function abrirWS(tel, msj) {
             const fTel = tel.toString().replace(/\D/g, '');
-            // encodeURIComponent asegura que los emojis y saltos de línea funcionen en PC
             const msjFinal = encodeURIComponent(msj);
             const urlWeb = `https://wa.me/${fTel}?text=${msjFinal}`;
-            
-            // Abrimos en una pestaña nueva (funciona mejor para PC y Móvil simultáneamente)
             window.open(urlWeb, '_blank');
         }
 
