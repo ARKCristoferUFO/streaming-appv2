@@ -63,12 +63,12 @@
                         <input id="costo" type="number" step="0.01" placeholder="Costo $" class="bg-slate-800 border border-slate-700 rounded-lg p-2.5 outline-none focus:border-red-500 text-white">
                         <input id="precio" type="number" step="0.01" placeholder="Venta $" class="bg-slate-800 border border-slate-700 rounded-lg p-2.5 font-bold text-green-400 outline-none focus:border-green-500">
                     </div>
-                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-                        <input id="correo" type="text" placeholder="Correo / Usuario" class="w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white">
-                        <input id="clave" type="text" placeholder="Contraseña" class="w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white">
+                    <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2 text-white">
+                        <input id="correo" type="text" placeholder="Correo / Usuario" class="w-full bg-transparent border-b border-slate-800 p-1 outline-none">
+                        <input id="clave" type="text" placeholder="Contraseña" class="w-full bg-transparent border-b border-slate-800 p-1 outline-none">
                         <div class="grid grid-cols-2 gap-2 mt-2">
-                            <input id="perfil" type="text" placeholder="Perfil" class="bg-slate-800 p-1 rounded text-[9px] text-white">
-                            <input id="pin" type="text" placeholder="PIN" class="bg-slate-800 p-1 rounded text-[9px] text-white">
+                            <input id="perfil" type="text" placeholder="Perfil" class="bg-slate-800 p-1 rounded text-[9px]">
+                            <input id="pin" type="text" placeholder="PIN" class="bg-slate-800 p-1 rounded text-[9px]">
                         </div>
                     </div>
                     <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 font-bold text-white outline-none">
@@ -78,7 +78,7 @@
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
                 <div class="p-4 border-b border-slate-800">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="🔍 Buscar cliente o servicio..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 outline-none focus:border-blue-500 text-white">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="&#128269; Buscar cliente o servicio..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 outline-none focus:border-blue-500 text-white">
                 </div>
                 <div class="tabla-contenedor max-h-[600px]">
                     <table class="w-full text-left">
@@ -173,7 +173,7 @@
                             <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md">Renovar</button>
                             <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md">Cobro</button>
                         </td>
-                        <td class="p-4"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 transition-colors">🗑️</button></td>
+                        <td class="p-4 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 transition-colors">&#128465;</button></td>
                     </tr>`;
             });
 
@@ -223,12 +223,22 @@
             location.reload();
         }
 
+        // --- FUNCIÓN DE WHATSAPP CON EMOJIS BLINDADOS ---
         function wsAcceso(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
             
-            // FORMATO SOLICITADO
-            const msj = `⭐ *SERVICIOS ACTIVOS - ${c[1]}* ⭐%0A------------------------------%0A📺 *SERVICIO:* ${c[3]}%0A👤 *Usuario:* ${c[6]}%0A🔑 *Clave:* ${c[7]}%0A👤 *Perfil:* ${c[8]}%0A📌 *PIN:* ${c[9]}%0A🗓️ *Vence:* ${fechaV}%0A------------------------------%0A%0A⚠️ *REGLAS IMPORTANTES:*%0A- No cambiar datos de la cuenta.%0A- Usar solo el perfil asignado.%0A%0AGracias por tu compra en *Planet Streaming* 🍿`;
+            // Los emojis se envían como códigos codificados para que el navegador NO los rompa
+            const star = decodeURIComponent('%E2%AD%90'); // ⭐
+            const tv = decodeURIComponent('%F0%9F%93%BA'); // 📺
+            const user = decodeURIComponent('%F0%9F%91%A4'); // 👤
+            const key = decodeURIComponent('%F0%9F%94%91'); // 🔑
+            const pin = decodeURIComponent('%F0%9F%93%8C'); // 📌
+            const calendar = decodeURIComponent('%F0%9F%93%85'); // 🗓️
+            const warn = decodeURIComponent('%E2%9A%A0%EF%B8%8F'); // ⚠️
+            const popcorn = decodeURIComponent('%F0%9F%8D%BF'); // 🍿
+
+            const msj = `${star} *SERVICIOS ACTIVOS - ${c[1]}* ${star}%0A------------------------------%0A${tv} *SERVICIO:* ${c[3]}%0A${user} *Usuario:* ${c[6]}%0A${key} *Clave:* ${c[7]}%0A${user} *Perfil:* ${c[8]}%0A${pin} *PIN:* ${c[9]}%0A${calendar} *Vence:* ${fechaV}%0A------------------------------%0A%0A${warn} *REGLAS IMPORTANTES:*%0A- No cambiar datos de la cuenta.%0A- Usar solo el perfil asignado.%0A%0AGracias por tu compra en *Planet Streaming* ${popcorn}`;
             
             abrirWS(c[2], msj);
         }
@@ -236,12 +246,13 @@
         function wsCobro(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
-            const msj = `Hola *${c[1]}*, te saludamos de *Planet Streaming*. Tu servicio de *${c[3]}* vence pronto (${fechaV}). 🚀 ¿Deseas renovar para no perder tu perfil?`;
+            const rocket = decodeURIComponent('%F0%9F%9A%80'); // 🚀
+            const msj = `Hola *${c[1]}*, te saludamos de *Planet Streaming*. Tu servicio de *${c[3]}* vence pronto (${fechaV}). ${rocket} ¿Deseas renovar para no perder tu perfil?`;
             abrirWS(c[2], msj);
         }
 
         function abrirWS(tel, msj) {
-            const fTel = tel.replace('+', '').replace(/\s/g, '');
+            const fTel = tel.toString().replace('+', '').replace(/\D/g, '');
             const urlApp = `whatsapp://send?phone=${fTel}&text=${msj}`;
             const urlWeb = `https://wa.me/${fTel}?text=${msj}`;
             window.location.href = urlApp;
