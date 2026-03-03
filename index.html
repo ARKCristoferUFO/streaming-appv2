@@ -78,7 +78,6 @@
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
                 <div class="p-4 border-b border-slate-800 flex items-center gap-2">
-                    <span class="text-lg">\uD83D\uDCA0</span>
                     <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar cliente o servicio..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white outline-none focus:border-blue-500 font-medium">
                 </div>
                 <div class="tabla-contenedor max-h-[600px]">
@@ -93,7 +92,7 @@
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800 text-white font-bold uppercase">
-                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic text-xs uppercase">Cargando base de datos...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center loading text-slate-600 font-bold italic text-xs uppercase">Conectando...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -142,16 +141,13 @@
                 const fechaV = procesarFecha(c[10]);
                 const diff = fechaV.getTime() - hoy.getTime();
                 const dias = Math.ceil(diff / (1000 * 60 * 60 * 24));
-                
                 const fReg = new Date(parseInt(c[0]));
                 const costoItem = parseFloat(c[4]) || 0;
                 const ventaItem = parseFloat(c[5]) || 0;
                 const gan = ventaItem - costoItem;
 
                 if(!isNaN(fReg.getTime())) {
-                    if(fReg.toDateString() === hoy.toDateString()) {
-                        vDia += ventaItem; cDia += costoItem;
-                    }
+                    if(fReg.toDateString() === hoy.toDateString()) { vDia += ventaItem; cDia += costoItem; }
                     if(fReg.getMonth() === hoy.getMonth() && fReg.getFullYear() === 2026) uMes += gan;
                     if(fReg.getFullYear() === 2026) uAnio += gan;
                 }
@@ -173,7 +169,7 @@
                             <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md italic">Renovar</button>
                             <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-2 py-1.5 rounded text-[9px] font-black uppercase btn-ws shadow-md italic">Cobro</button>
                         </td>
-                        <td class="p-4 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 transition-colors font-bold">&#10006;</button></td>
+                        <td class="p-4 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 font-bold">&#10006;</button></td>
                     </tr>`;
             });
 
@@ -201,14 +197,9 @@
                 pin: document.getElementById('pin').value.trim(),
                 vencimiento: document.getElementById('vencimiento').value
             };
-            if(!data.nombre || !data.vencimiento) return alert("Faltan datos clave");
             btn.disabled = true; btn.innerText = "PROCESANDO...";
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            
-            if(document.getElementById('mantenerDatos').checked) {
-                document.getElementById('costo').value = ""; document.getElementById('precio').value = "";
-                btn.disabled = false; btn.innerText = "LISTO"; cargarDatos();
-            } else { location.reload(); }
+            location.reload();
         }
 
         async function renovar(id) {
@@ -218,39 +209,34 @@
         }
 
         async function eliminar(id) {
-            if(!confirm("\u00BFEliminar para siempre?")) return;
+            if(!confirm("\u00BFEliminar?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
 
-        // --- C\u00D3DIGO DE EMOJIS BLINDADOS ---
+        // --- FUNCIONES WHATSAPP (CORREGIDAS PARA PC) ---
         function wsAcceso(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
             
-            const star = "\u2B50";
-            const tv = "\uD83D\uDCFA";
-            const user = "\uD83D\uDC64";
-            const key = "\uD83D\uDD11";
-            const pin = "\uD83D\uDCCC";
-            const cal = "\uD83D\uDDD3";
-            const warn = "\u26A0\uFE0F";
-            const popcorn = "\uD83C\uDF7F";
+            const star = "\u2B50"; const tv = "\uD83D\uDCFA"; const user = "\uD83D\uDC64";
+            const key = "\uD83D\uDD11"; const pin = "\uD83D\uDCCC"; const cal = "\uD83D\uDDD3";
+            const warn = "\u26A0\uFE0F"; const popcorn = "\uD83C\uDF7F";
 
-            const msj = star + " *SERVICIOS ACTIVOS - " + c[1] + "* " + star + "%0A" +
-                        "Gracias por tu compra en *Streaming Planet*%0A%0A" +
-                        "------------------------------%0A" +
-                        tv + " *SERVICIO:* " + c[3] + "%0A" +
-                        user + " *Usuario:* " + c[6] + "%0A" +
-                        key + " *Clave:* " + c[7] + "%0A" +
-                        user + " *Perfil:* " + c[8] + "%0A" +
-                        pin + " *PIN:* " + c[9] + "%0A" +
-                        cal + " *Vence:* " + fechaV + "%0A" +
-                        "------------------------------%0A%0A" +
-                        warn + " *REGLAS IMPORTANTES:*%0A" +
-                        "- No cambiar datos de la cuenta.%0A" +
-                        "- Usar solo el perfil asignado.%0A" +
-                        "- Disfruta tu programaci\u00F3n " + popcorn;
+            const msj = `${star} *SERVICIOS ACTIVOS - ${c[1]}* ${star}\n` +
+                        `Gracias por tu compra en *Streaming Planet*\n\n` +
+                        `------------------------------\n` +
+                        `${tv} *SERVICIO:* ${c[3]}\n` +
+                        `${user} *Usuario:* ${c[6]}\n` +
+                        `${key} *Clave:* ${c[7]}\n` +
+                        `${user} *Perfil:* ${c[8]}\n` +
+                        `${pin} *PIN:* ${c[9]}\n` +
+                        `${cal} *Vence:* ${fechaV}\n` +
+                        `------------------------------\n\n` +
+                        `${warn} *REGLAS IMPORTANTES:*\n` +
+                        `- No cambiar datos de la cuenta.\n` +
+                        `- Usar solo el perfil asignado.\n` +
+                        `- Disfruta tu programación ${popcorn}`;
             
             abrirWS(c[2], msj);
         }
@@ -259,16 +245,18 @@
             const c = clientesGlobal.find(x => x[0] == id);
             const fechaV = procesarFecha(c[10]).toISOString().split('T')[0];
             const rocket = "\uD83D\uDE80";
-            const msj = "Hola *" + c[1] + "*, te saludamos de *Planet Streaming*. Tu servicio de *" + c[3] + "* vence pronto (" + fechaV + "). " + rocket + " \u00BFDeseas renovar para no perder tu perfil?";
+            const msj = `Hola *${c[1]}*, te saludamos de *Streaming Planet*. Tu servicio de *${c[3]}* vence pronto (${fechaV}). ${rocket} ¿Deseas renovar para no perder tu perfil?`;
             abrirWS(c[2], msj);
         }
 
         function abrirWS(tel, msj) {
-            const fTel = tel.toString().replace('+', '').replace(/\D/g, '');
-            const urlApp = "whatsapp://send?phone=" + fTel + "&text=" + msj;
-            const urlWeb = "https://wa.me/" + fTel + "?text=" + msj;
-            window.location.href = urlApp;
-            setTimeout(() => { if (!document.hidden) window.open(urlWeb, '_blank'); }, 600);
+            const fTel = tel.toString().replace(/\D/g, '');
+            // encodeURIComponent asegura que los emojis y saltos de línea funcionen en PC
+            const msjFinal = encodeURIComponent(msj);
+            const urlWeb = `https://wa.me/${fTel}?text=${msjFinal}`;
+            
+            // Abrimos en una pestaña nueva (funciona mejor para PC y Móvil simultáneamente)
+            window.open(urlWeb, '_blank');
         }
 
         window.onload = cargarDatos;
