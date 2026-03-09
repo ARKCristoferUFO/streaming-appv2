@@ -35,12 +35,12 @@
                     <input id="nombre" type="text" placeholder="NOMBRE CLIENTE" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold uppercase outline-none focus:border-blue-500 text-white">
                     <input id="telefono" type="text" placeholder="WHATSAPP (Ej: 58412...)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 outline-none text-white">
                     
-                    <p class="text-[9px] text-slate-500 font-black uppercase">1. Seleccionar Servicios del Combo:</p>
+                    <p class="text-[9px] text-slate-500 font-black uppercase">1. Seleccionar Servicios:</p>
                     <div id="gridPlataformas" class="grid grid-cols-2 gap-1.5 max-h-[140px] overflow-y-auto p-2 bg-slate-950 rounded-xl border border-slate-800"></div>
 
-                    <p class="text-[9px] text-slate-500 font-black uppercase mt-4">2. Datos de Acceso (Persistentes):</p>
+                    <p class="text-[9px] text-slate-500 font-black uppercase mt-4">2. Credenciales (Memoria Activa):</p>
                     <div id="contenedorDatosDinamicos" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-                        <p class="text-slate-700 italic text-center py-10 border-2 border-dashed border-slate-800 rounded-xl uppercase">Selecciona plataformas para rellenar</p>
+                        <p class="text-slate-700 italic text-center py-10 border-2 border-dashed border-slate-800 rounded-xl uppercase">Selecciona servicios arriba</p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 pt-4 border-t border-slate-800">
@@ -49,7 +49,7 @@
                     </div>
 
                     <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 font-bold outline-none text-white">
-                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-4 rounded-2xl uppercase shadow-lg transition-all active:scale-95">Registrar en Base de Datos</button>
+                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-4 rounded-2xl uppercase shadow-lg transition-all active:scale-95">Registrar Cliente</button>
                 </div>
             </div>
 
@@ -60,7 +60,7 @@
                 <div class="overflow-x-auto max-h-[800px]">
                     <table class="w-full text-left">
                         <thead class="bg-slate-950 text-slate-500 uppercase text-[9px] tracking-widest sticky top-0 z-10">
-                            <tr><th class="p-5">Cliente / Servicio</th><th class="p-5 text-center">Estado</th><th class="p-5 text-center">Vence</th><th class="p-5 text-center">Acciones</th><th class="p-5 text-center">X</th></tr>
+                            <tr><th class="p-5">Cliente / Servicio</th><th class="p-5 text-center">Estado</th><th class="p-5 text-center">Vence</th><th class="p-5 text-center">Gestión</th><th class="p-5 text-center">X</th></tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800 text-white font-bold uppercase">
                             <tr><td colspan="5" class="p-24 text-center loading text-slate-600 font-black">ACTUALIZANDO REGISTROS...</td></tr>
@@ -74,7 +74,7 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
         let clientesGlobal = [];
-        let datosTemporales = {}; // Memoria para no perder lo escrito
+        let datosTemporales = {}; 
         
         const listaPlat = ["NETFLIX PERFIL", "NETFLIX PERSONAL", "DISNEY+", "MAX", "PRIME VIDEO", "PARAMOUNT+", "IPTV", "FLUJO TV", "TELELATINO", "VIX", "YOUTUBE", "SPOTIFY", "CRUNCHYROLL", "VIKI RAKUTEN", "OLEADA TV", "CANVA PRO"];
 
@@ -90,7 +90,7 @@
         }
 
         function togglePlataforma(btn, nombre) {
-            // Guardar datos actuales antes de redibujar
+            // Guardar lo que ya se escribió antes de redibujar
             const blocks = document.querySelectorAll('.data-block');
             blocks.forEach(b => {
                 const id = b.dataset.plataforma;
@@ -101,7 +101,6 @@
                     pin: b.querySelector('.val-pin').value
                 };
             });
-
             btn.classList.toggle('active');
             renderizarFormularios();
         }
@@ -109,27 +108,21 @@
         function renderizarFormularios() {
             const contenedor = document.getElementById('contenedorDatosDinamicos');
             const botonesActivos = document.querySelectorAll('.btn-plataforma.active');
-            
             if (botonesActivos.length === 0) {
                 contenedor.innerHTML = '<p class="text-slate-700 italic text-center py-10 border-2 border-dashed border-slate-800 rounded-xl uppercase">Selecciona plataformas para rellenar</p>';
                 return;
             }
-
             contenedor.innerHTML = '';
             botonesActivos.forEach(btn => {
                 const nombre = btn.innerText;
                 const d = datosTemporales[nombre] || { correo: '', clave: '', perfil: '', pin: '' };
-                
                 const div = document.createElement('div');
                 div.className = "bg-slate-950 p-4 rounded-2xl border border-blue-600/30 space-y-2 data-block";
                 div.dataset.plataforma = nombre;
                 div.innerHTML = `
-                    <div class="flex justify-between items-center mb-1">
-                        <p class="text-blue-500 font-black text-[9px] uppercase">${nombre}</p>
-                        <span class="text-[8px] text-slate-600">DATOS ACTIVOS</span>
-                    </div>
-                    <input type="text" placeholder="Correo / Usuario" class="val-correo w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white focus:border-blue-500 transition-colors" value="${d.correo}">
-                    <input type="text" placeholder="Contraseña" class="val-clave w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white focus:border-blue-500 transition-colors" value="${d.clave}">
+                    <p class="text-blue-500 font-black text-[9px] uppercase">${nombre}</p>
+                    <input type="text" placeholder="Usuario" class="val-correo w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white focus:border-blue-500" value="${d.correo}">
+                    <input type="text" placeholder="Contraseña" class="val-clave w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white focus:border-blue-500" value="${d.clave}">
                     <div class="grid grid-cols-2 gap-2 mt-1">
                         <input type="text" placeholder="Perfil" class="val-perfil bg-slate-900 p-1.5 rounded-lg text-[9px] text-white border border-slate-800" value="${d.perfil}">
                         <input type="text" placeholder="PIN" class="val-pin bg-slate-900 p-1.5 rounded-lg text-[9px] text-white border border-slate-800" value="${d.pin}">
@@ -142,12 +135,9 @@
             const btn = document.getElementById('btnGuardar');
             const nom = document.getElementById('nombre').value.toUpperCase().trim();
             const blocks = document.querySelectorAll('.data-block');
-            
-            if (!nom || blocks.length === 0) return alert("Error: Debes ingresar el nombre y al menos un servicio.");
-
+            if (!nom || blocks.length === 0) return alert("Falta nombre o servicios");
             btn.innerText = "REGISTRANDO..."; btn.disabled = true;
             let c=[], k=[], p=[], n=[], s=[];
-            
             blocks.forEach(b => {
                 s.push(b.dataset.plataforma);
                 c.push(b.querySelector('.val-correo').value.trim() || '---');
@@ -155,38 +145,21 @@
                 p.push(b.querySelector('.val-perfil').value.trim() || '---');
                 n.push(b.querySelector('.val-pin').value.trim() || '---');
             });
-
             const payload = {
-                id: Date.now(),
-                nombre: nom,
-                telefono: document.getElementById('telefono').value.trim(),
-                servicio: s.join(" + "),
-                costo: document.getElementById('costo').value || 0,
-                precio: document.getElementById('precio').value || 0,
-                correo: c.join(" , "),
-                clave: k.join(" , "),
-                perfil: p.join(" , "),
-                pin: n.join(" , "),
+                id: Date.now(), nombre: nom, telefono: document.getElementById('telefono').value.trim(),
+                servicio: s.join(" + "), costo: document.getElementById('costo').value || 0,
+                precio: document.getElementById('precio').value || 0, correo: c.join(" , "),
+                clave: k.join(" , "), perfil: p.join(" , "), pin: n.join(" , "),
                 vencimiento: document.getElementById('vencimiento').value
             };
-
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                alert("¡Registro Exitoso!");
                 location.reload();
-            } catch (e) {
-                alert("Error de conexión");
-                btn.disabled = false;
-                btn.innerText = "Registrar de nuevo";
-            }
+            } catch(e) { alert("Error al guardar"); btn.disabled = false; }
         }
 
         async function cargarDatos() {
-            try { 
-                const r = await fetch(API_URL); 
-                clientesGlobal = await r.json(); 
-                renderizarTabla(); 
-            } catch(e) { console.error("Error cargando datos"); }
+            try { const r = await fetch(API_URL); clientesGlobal = await r.json(); renderizarTabla(); } catch(e) {}
         }
 
         function renderizarTabla() {
@@ -194,44 +167,32 @@
             const buscar = document.getElementById('buscador').value.toLowerCase();
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             let vD=0, cD=0, uM=0, uA=0;
-
             let fil = clientesGlobal.filter(c => c[1].toString().toLowerCase().includes(buscar) || c[3].toString().toLowerCase().includes(buscar));
             let html = "";
-            
             fil.forEach(c => {
                 const fV = procesarFecha(c[10]);
                 const dias = Math.ceil((fV.getTime() - hoy.getTime()) / (1000*60*60*24));
                 const fR = new Date(parseInt(c[0]));
-                const cost = parseFloat(c[4]) || 0; 
-                const prec = parseFloat(c[5]) || 0;
-
+                const cost = parseFloat(c[4]) || 0; const prec = parseFloat(c[5]) || 0;
                 if(!isNaN(fR.getTime())) {
                     if(fR.toDateString() === hoy.toDateString()) { vD += prec; cD += cost; }
                     if(fR.getMonth() === hoy.getMonth() && fR.getFullYear() === 2026) uM += (prec - cost);
                     if(fR.getFullYear() === 2026) uA += (prec - cost);
                 }
-                
                 let color = dias <= 0 ? "status-red" : (dias <= 3 ? "status-yellow" : "status-green");
-                
                 html += `<tr class="border-b border-slate-800 hover:bg-slate-900/50 transition-all">
-                    <td class="p-5">
-                        <span class="text-blue-400 font-black text-xs">${c[1]}</span><br>
-                        <span class="text-slate-500 text-[8px] tracking-tighter">${c[3]}</span>
-                    </td>
-                    <td class="p-5 text-center">
-                        <span class="px-3 py-1 rounded-full border font-black ${color}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span>
-                    </td>
+                    <td class="p-5"><span class="text-blue-400 font-black">${c[1]}</span><br><span class="text-slate-500 text-[8px]">${c[3]}</span></td>
+                    <td class="p-5 text-center"><span class="px-3 py-1 rounded-full border font-black ${color}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span></td>
                     <td class="p-5 text-center text-slate-500 font-mono text-[9px]">${isNaN(fV.getTime()) ? '---' : fV.toISOString().split('T')[0]}</td>
-                    <td class="p-5 text-center">
-                        <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl shadow-lg font-black text-[10px] active:scale-90 transition-all">ENTREGAR</button>
+                    <td class="p-5 text-center flex flex-wrap gap-1 justify-center">
+                        <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-3 py-1.5 rounded-lg font-black text-[9px] hover:bg-blue-500 transition-all">ENTREGA</button>
+                        <button onclick="renovar('${c[0]}')" class="bg-emerald-600 px-3 py-1.5 rounded-lg font-black text-[9px] hover:bg-emerald-500 transition-all">RENOVAR</button>
+                        <button onclick="cobro('${c[0]}')" class="bg-yellow-600 px-3 py-1.5 rounded-lg font-black text-[9px] text-slate-950 hover:bg-yellow-500 transition-all">COBRO</button>
                     </td>
-                    <td class="p-5 text-center">
-                        <button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-600 font-bold transition-colors">✖</button>
-                    </td>
+                    <td class="p-5 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 font-bold">✖</button></td>
                 </tr>`;
             });
-            
-            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-700">No se encontraron registros activos</td></tr>';
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center">Sin registros</td></tr>';
             document.getElementById('gananciaDia').innerText = `$${vD.toFixed(2)}`;
             document.getElementById('costoDia').innerText = `$${cD.toFixed(2)}`;
             document.getElementById('netoDia').innerText = `$${(vD-cD).toFixed(2)}`;
@@ -247,16 +208,34 @@
         }
 
         async function eliminar(id) {
-            if(confirm("¿Estás seguro de que quieres eliminar este cliente?")) {
+            if(confirm("¿Eliminar cliente?")) {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
                 location.reload();
             }
         }
 
+        async function renovar(id) {
+            const cliente = clientesGlobal.find(x => x[0] == id);
+            if (!cliente) return;
+            if(confirm(`¿Renovar 30 días a ${cliente[1]}?`)) {
+                let fv = procesarFecha(cliente[10]);
+                fv.setDate(fv.getDate() + 30);
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'UPDATE', id: id, vencimiento: fv.toISOString().split('T')[0] }) });
+                alert("¡Renovado!");
+                location.reload();
+            }
+        }
+
+        function cobro(id) {
+            const cliente = clientesGlobal.find(x => x[0] == id);
+            if (!cliente) return;
+            const msj = `Hola *${cliente[1]}* 🚀\nTe saludamos de *Streaming Planet*. Tu servicio de *${cliente[3]}* está próximo a vencer. \n\n¿Deseas renovar para seguir disfrutando de tu programación? 🍿`;
+            window.open(`https://api.whatsapp.com/send?phone=${cliente[2].toString().replace(/\D/g, '')}&text=${encodeURIComponent(msj)}`, "_blank");
+        }
+
         function wsAcceso(id) {
             const cliente = clientesGlobal.find(x => x[0] == id);
             if (!cliente) return;
-
             const servicios = cliente[3].toString().split(" + ");
             const correos = cliente[6].toString().split(" , ");
             const claves = cliente[7].toString().split(" , ");
@@ -264,49 +243,23 @@
             const pins = cliente[9].toString().split(" , ");
             const fechaVenc = procesarFecha(cliente[10]).toISOString().split('T')[0];
 
-            let mensajeFinal = "";
+            const REGLAS = `🚨 REGLAS IMPORTANTES:\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.\n* Disfruta tu programación 🍿.`;
 
+            let msj = "";
             if (servicios.length > 1) {
-                // FORMATO COMBO PREMIUM
-                let bloqueServicios = "";
+                let bloque = "";
                 servicios.forEach((s, i) => {
-                    bloqueServicios += `\n📺 *SERVICIO:* ${s.trim()}\n` +
-                                       `✉️ *Usuario:* ${(correos[i] || correos[0] || '---').trim()}\n` +
-                                       `🔑 *Clave:* ${(claves[i] || claves[0] || '---').trim()}\n` +
-                                       `👤 *Perfil:* ${(perfiles[i] || perfiles[0] || '---').trim()}\n` +
-                                       `🔐 *PIN:* ${(pins[i] || pins[0] || '---').trim()}\n` +
-                                       `🗓 *Vence:* ${fechaVenc}\n` +
-                                       `------------------------------\n`;
+                    bloque += `📺 SERVICIO: ${s.trim()}\n✉️ Usuario: ${(correos[i] || correos[0] || '---').trim()}\n🔑 Contraseña: ${(claves[i] || claves[0] || '---').trim()}\n👤 Perfil: ${(perfiles[i] || perfiles[0] || '---').trim()}\n🔐 PIN: ${(pins[i] || pins[0] || '---').trim()}\n🗓 Vence: ${fechaVenc}\n------------------------------\n`;
                 });
-
-                mensajeFinal = `🚀 *SERVICIOS ACTIVOS - ${cliente[1]}* ⭐\n` +
-                               `Gracias por preferir *Streaming Planet*\n\n` +
-                               `------------------------------` + 
-                               bloqueServicios +
-                               `🚨 *REGLAS:* No modificar datos ni perfiles ajenos.\n` +
-                               `🍿 ¡Que disfrutes tu combo!`;
+                msj = `🚀 SERVICIOS ACTIVOS - ${cliente[1]} ⭐\nGracias por preferir Streaming Planet\n\n${bloque}\n${REGLAS}`;
             } else {
-                // FORMATO INDIVIDUAL
-                mensajeFinal = `🚀 *SERVICIO ACTIVO - ${cliente[1]}* ⭐\n` +
-                               `Gracias por preferir *Streaming Planet*\n\n` +
-                               `📺 *SERVICIO:* ${servicios[0].trim()}\n` +
-                               `✉️ *Usuario:* ${correos[0].trim()}\n` +
-                               `🔑 *Contraseña:* ${claves[0].trim()}\n` +
-                               `👤 *Perfil:* ${perfiles[0].trim()}\n` +
-                               `🔐 *PIN:* ${pins[0].trim()}\n` +
-                               `🗓 *Vence:* ${fechaVenc}\n\n` +
-                               `🍿 ¡Disfruta tu programación!`;
+                msj = `🚀 SERVICIO ACTIVO - ${cliente[1]} ⭐\nGracias por preferir Streaming Planet\n\n📺 SERVICIO: ${servicios[0].trim()}\n✉️ Usuario: ${correos[0].trim()}\n🔑 Contraseña: ${claves[0].trim()}\n👤 Perfil: ${perfiles[0].trim()}\n🔐 PIN: ${pins[0].trim()}\n🗓 Vence: ${fechaVenc}\n------------------------------\n\n${REGLAS}`;
             }
-
-            const telefono = cliente[2].toString().replace(/\D/g, '');
-            const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensajeFinal)}`;
-            window.open(url, "_blank");
+            window.open(`https://api.whatsapp.com/send?phone=${cliente[2].toString().replace(/\D/g, '')}&text=${encodeURIComponent(msj)}`, "_blank");
         }
 
         window.onload = () => {
-            initGrid(); 
-            cargarDatos();
-            // Default 30 días
+            initGrid(); cargarDatos();
             document.getElementById('vencimiento').value = new Date(Date.now() + 2592000000).toISOString().split('T')[0];
         };
     </script>
