@@ -57,6 +57,7 @@
                         <option>IPTV</option>
                         <option>FLUJO TV</option>
                         <option>TELELATINO</option>
+                        <option>VIX</option>
                         <option>YOUTUBE</option>
                         <option>SPOTIFY</option>
                         <option>CRUNCHYROLL</option>
@@ -77,13 +78,13 @@
                         </div>
                     </div>
                     <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 font-bold text-white">
-                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-3 rounded-xl uppercase shadow-lg">Guardar Registro</button>
+                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-3 rounded-xl uppercase shadow-lg transition-all">Guardar Registro</button>
                 </div>
             </div>
 
             <div class="lg:col-span-3 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
                 <div class="p-4 border-b border-slate-800">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar cliente..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white outline-none">
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar cliente o servicio..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white outline-none">
                 </div>
                 <div class="tabla-contenedor max-h-[600px]">
                     <table class="w-full text-left">
@@ -97,7 +98,7 @@
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800 text-white font-bold uppercase">
-                            <tr><td colspan="5" class="p-20 text-center loading uppercase font-black">Sincronizando...</td></tr>
+                            <tr><td colspan="5" class="p-20 text-center loading uppercase font-black">Conectando con la base de datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -109,7 +110,7 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
         let clientesGlobal = [];
 
-        // FUNCIÓN PARA PONER FECHA +30 DÍAS AL ABRIR
+        // 1. FECHA AUTOMÁTICA (+30 DÍAS)
         function establecerFechaPredeterminada() {
             const fechaFutura = new Date();
             fechaFutura.setDate(fechaFutura.getDate() + 30);
@@ -176,15 +177,15 @@
                         </td>
                         <td class="p-4 text-center text-slate-500 font-mono">${fechaTxt}</td>
                         <td class="p-4 text-center space-x-1">
-                            <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-3 py-1.5 rounded font-black uppercase shadow-md">Entrega</button>
-                            <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-3 py-1.5 rounded font-black uppercase shadow-md">Renovar</button>
-                            <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-3 py-1.5 rounded font-black uppercase shadow-md">Cobro</button>
+                            <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-3 py-1.5 rounded font-black uppercase shadow-md hover:bg-blue-500">Entrega</button>
+                            <button onclick="renovar('${c[0]}')" class="bg-indigo-600 px-3 py-1.5 rounded font-black uppercase shadow-md hover:bg-indigo-500">Renovar</button>
+                            <button onclick="wsCobro('${c[0]}')" class="bg-green-600 px-3 py-1.5 rounded font-black uppercase shadow-md hover:bg-green-500">Cobro</button>
                         </td>
                         <td class="p-4 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-700 hover:text-red-500 font-bold text-lg">✖</button></td>
                     </tr>`;
             });
 
-            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center uppercase font-black">No hay registros</td></tr>';
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center uppercase font-black">No se encontraron registros</td></tr>';
             
             document.getElementById('gananciaDia').innerText = `$${vDia.toFixed(2)}`;
             document.getElementById('costoDia').innerText = `$${cDia.toFixed(2)}`;
@@ -208,11 +209,13 @@
                 pin: document.getElementById('pin').value.trim(),
                 vencimiento: document.getElementById('vencimiento').value
             };
-            btn.innerText = "ESPERE...";
+            if(!data.nombre || !data.telefono) { alert("Nombre y Teléfono son obligatorios"); return; }
+            btn.innerText = "GUARDANDO...";
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
             location.reload();
         }
 
+        // 2. RENOVACIÓN ACUMULATIVA (SUMA DÍAS SI QUEDAN)
         async function renovar(id) {
             const c = clientesGlobal.find(x => x[0] == id);
             if(!c) return;
@@ -220,16 +223,17 @@
             const hoy = new Date();
             let fechaVencActual = procesarFecha(c[10]);
             
-            // Lógica Acumulativa: si le quedan días, los suma a los 30.
             let nuevaFecha;
             if (fechaVencActual > hoy) {
+                // Si aún no vence, suma 30 días a la fecha que ya tiene
                 nuevaFecha = new Date(fechaVencActual.getTime() + (30 * 24 * 60 * 60 * 1000));
             } else {
+                // Si ya venció, suma 30 días desde hoy
                 nuevaFecha = new Date(hoy.getTime() + (30 * 24 * 60 * 60 * 1000));
             }
 
             const nuevaFechaStr = nuevaFecha.toISOString().split('T')[0];
-            if(!confirm("¿Sumar 30 días adicionales? Nueva fecha: " + nuevaFechaStr)) return;
+            if(!confirm("¿Renovar 30 días adicionales? Nueva fecha: " + nuevaFechaStr)) return;
 
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ 
                 action: 'UPDATE_FIELD', 
@@ -240,7 +244,7 @@
         }
 
         async function eliminar(id) {
-            if(!confirm("¿Eliminar?")) return;
+            if(!confirm("¿Eliminar este registro permanentemente?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
@@ -276,10 +280,12 @@
             
             let msj = "";
             if (dias <= 0) {
+                // MENSAJE DÍA 0 O VENCIDO
                 msj = "\u00A1Hola, " + c[1] + "! \uD83D\uDC4B \u00BFCOmo est\u00E1s? Te escribimos para recordarte que tu plan de " + c[3] + " \uD83C\uDF7F termina hoy. \uD83D\uDE31\n\n" +
                       "Si quieres continuar viendo todo el contenido, solo tienes que contactarnos \uD83D\uDCF2 para reactivar tu cuenta.\n" +
                       "\u00A1Te esperamos! \u2728";
             } else {
+                // MENSAJE RECORDATORIO (3 DÍAS O MÁS)
                 msj = "Hola " + c[1] + ", a tu servicio de " + c[3] + " *le queda *" + dias + " d\u00EDas de servicio. Recuerda que puedes renovar por este medio.";
             }
             abrirWS(c[2], msj);
