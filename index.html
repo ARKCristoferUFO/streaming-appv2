@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Planet 2026 - Master Combo Edition</title>
+    <title>Streaming Planet 2026 - Control Total</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .loading { animation: pulse 2s infinite; }
@@ -21,6 +21,7 @@
 <body class="bg-slate-950 text-slate-100 p-4 font-sans text-[11px]">
     <div class="max-w-[1600px] mx-auto">
         
+        <!-- ESTADÍSTICAS CORREGIDAS -->
         <header class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 font-black text-center">
             <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg text-blue-400"><p class="text-[9px] uppercase">Ventas Hoy</p><p id="gananciaDia" class="text-xl">$0.00</p></div>
             <div class="bg-slate-900 p-4 rounded-2xl border border-red-900/40 shadow-lg text-red-400"><p class="text-[9px] uppercase">Costo Hoy</p><p id="costoDia" class="text-xl">$0.00</p></div>
@@ -30,6 +31,7 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- PANEL DE REGISTRO -->
             <div class="lg:col-span-1 bg-slate-900 p-5 rounded-3xl border border-slate-800 shadow-2xl h-fit sticky top-4">
                 <div class="space-y-3">
                     <input id="nombre" type="text" placeholder="NOMBRE CLIENTE" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 font-bold uppercase outline-none focus:border-blue-500 text-white">
@@ -40,7 +42,7 @@
 
                     <p class="text-[9px] text-slate-500 font-black uppercase mt-4">2. Credenciales (Memoria Activa):</p>
                     <div id="contenedorDatosDinamicos" class="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-                        <p class="text-slate-700 italic text-center py-10 border-2 border-dashed border-slate-800 rounded-xl uppercase">Selecciona servicios arriba</p>
+                        <p class="text-slate-700 italic text-center py-10 border-2 border-dashed border-slate-800 rounded-xl uppercase">Selecciona plataformas arriba</p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2 pt-4 border-t border-slate-800">
@@ -49,10 +51,11 @@
                     </div>
 
                     <input id="vencimiento" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 font-bold outline-none text-white">
-                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-4 rounded-2xl uppercase shadow-lg transition-all active:scale-95">Registrar Cliente</button>
+                    <button onclick="guardarEnGoogle()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 font-black py-4 rounded-2xl uppercase shadow-lg transition-all active:scale-95">Registrar en Base de Datos</button>
                 </div>
             </div>
 
+            <!-- TABLA DE GESTIÓN -->
             <div class="lg:col-span-3 bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
                 <div class="p-4 border-b border-slate-800 bg-slate-900/50">
                     <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar cliente o plataforma..." class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-5 py-3 outline-none text-white">
@@ -90,7 +93,6 @@
         }
 
         function togglePlataforma(btn, nombre) {
-            // Guardar lo que ya se escribió antes de redibujar
             const blocks = document.querySelectorAll('.data-block');
             blocks.forEach(b => {
                 const id = b.dataset.plataforma;
@@ -124,8 +126,8 @@
                     <input type="text" placeholder="Usuario" class="val-correo w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white focus:border-blue-500" value="${d.correo}">
                     <input type="text" placeholder="Contraseña" class="val-clave w-full bg-transparent border-b border-slate-800 p-1 outline-none text-white focus:border-blue-500" value="${d.clave}">
                     <div class="grid grid-cols-2 gap-2 mt-1">
-                        <input type="text" placeholder="Perfil" class="val-perfil bg-slate-900 p-1.5 rounded-lg text-[9px] text-white border border-slate-800" value="${d.perfil}">
-                        <input type="text" placeholder="PIN" class="val-pin bg-slate-900 p-1.5 rounded-lg text-[9px] text-white border border-slate-800" value="${d.pin}">
+                        <input type="text" placeholder="Perfil" class="val-perfil bg-slate-900 p-1.5 rounded-lg text-[9px] text-white" value="${d.perfil}">
+                        <input type="text" placeholder="PIN" class="val-pin bg-slate-900 p-1.5 rounded-lg text-[9px] text-white" value="${d.pin}">
                     </div>`;
                 contenedor.appendChild(div);
             });
@@ -152,10 +154,8 @@
                 clave: k.join(" , "), perfil: p.join(" , "), pin: n.join(" , "),
                 vencimiento: document.getElementById('vencimiento').value
             };
-            try {
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                location.reload();
-            } catch(e) { alert("Error al guardar"); btn.disabled = false; }
+            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            location.reload();
         }
 
         async function cargarDatos() {
@@ -166,33 +166,44 @@
             const tabla = document.getElementById('cuerpoTabla');
             const buscar = document.getElementById('buscador').value.toLowerCase();
             const hoy = new Date(); hoy.setHours(0,0,0,0);
+            
+            // RESET DE CONTADORES PARA EVITAR BUG DE NEGATIVOS
             let vD=0, cD=0, uM=0, uA=0;
+            
             let fil = clientesGlobal.filter(c => c[1].toString().toLowerCase().includes(buscar) || c[3].toString().toLowerCase().includes(buscar));
             let html = "";
             fil.forEach(c => {
                 const fV = procesarFecha(c[10]);
                 const dias = Math.ceil((fV.getTime() - hoy.getTime()) / (1000*60*60*24));
                 const fR = new Date(parseInt(c[0]));
-                const cost = parseFloat(c[4]) || 0; const prec = parseFloat(c[5]) || 0;
+                
+                // FORZAR NUMÉRICOS PARA CÁLCULO SEGURO
+                const cost = Number(c[4]) || 0; 
+                const prec = Number(c[5]) || 0;
+                const util = prec - cost;
+
                 if(!isNaN(fR.getTime())) {
                     if(fR.toDateString() === hoy.toDateString()) { vD += prec; cD += cost; }
-                    if(fR.getMonth() === hoy.getMonth() && fR.getFullYear() === 2026) uM += (prec - cost);
-                    if(fR.getFullYear() === 2026) uA += (prec - cost);
+                    if(fR.getMonth() === hoy.getMonth() && fR.getFullYear() === 2026) uM += util;
+                    if(fR.getFullYear() === 2026) uA += util;
                 }
+
                 let color = dias <= 0 ? "status-red" : (dias <= 3 ? "status-yellow" : "status-green");
                 html += `<tr class="border-b border-slate-800 hover:bg-slate-900/50 transition-all">
                     <td class="p-5"><span class="text-blue-400 font-black">${c[1]}</span><br><span class="text-slate-500 text-[8px]">${c[3]}</span></td>
                     <td class="p-5 text-center"><span class="px-3 py-1 rounded-full border font-black ${color}">${dias <= 0 ? 'VENCIDO' : dias + ' DÍAS'}</span></td>
                     <td class="p-5 text-center text-slate-500 font-mono text-[9px]">${isNaN(fV.getTime()) ? '---' : fV.toISOString().split('T')[0]}</td>
                     <td class="p-5 text-center flex flex-wrap gap-1 justify-center">
-                        <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-3 py-1.5 rounded-lg font-black text-[9px] hover:bg-blue-500 transition-all">ENTREGA</button>
-                        <button onclick="renovar('${c[0]}')" class="bg-emerald-600 px-3 py-1.5 rounded-lg font-black text-[9px] hover:bg-emerald-500 transition-all">RENOVAR</button>
-                        <button onclick="cobro('${c[0]}')" class="bg-yellow-600 px-3 py-1.5 rounded-lg font-black text-[9px] text-slate-950 hover:bg-yellow-500 transition-all">COBRO</button>
+                        <button onclick="wsAcceso('${c[0]}')" class="bg-blue-600 px-3 py-1.5 rounded-lg font-black text-[9px] hover:bg-blue-500 active:scale-95 transition-all">ENTREGA</button>
+                        <button onclick="renovar('${c[0]}')" class="bg-emerald-600 px-3 py-1.5 rounded-lg font-black text-[9px] hover:bg-emerald-500 active:scale-95 transition-all">RENOVAR</button>
+                        <button onclick="cobro('${c[0]}')" class="bg-yellow-600 px-3 py-1.5 rounded-lg font-black text-[9px] text-slate-950 hover:bg-yellow-500 active:scale-95 transition-all">COBRO</button>
                     </td>
                     <td class="p-5 text-center"><button onclick="eliminar('${c[0]}')" class="text-slate-800 hover:text-red-500 font-bold">✖</button></td>
                 </tr>`;
             });
-            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center">Sin registros</td></tr>';
+            tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center">No hay registros</td></tr>';
+            
+            // ACTUALIZAR FRONTEND
             document.getElementById('gananciaDia').innerText = `$${vD.toFixed(2)}`;
             document.getElementById('costoDia').innerText = `$${cD.toFixed(2)}`;
             document.getElementById('netoDia').innerText = `$${(vD-cD).toFixed(2)}`;
@@ -208,7 +219,7 @@
         }
 
         async function eliminar(id) {
-            if(confirm("¿Eliminar cliente?")) {
+            if(confirm("¿Eliminar registro permanentemente?")) {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
                 location.reload();
             }
@@ -221,7 +232,7 @@
                 let fv = procesarFecha(cliente[10]);
                 fv.setDate(fv.getDate() + 30);
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'UPDATE', id: id, vencimiento: fv.toISOString().split('T')[0] }) });
-                alert("¡Renovado!");
+                alert("¡Renovación exitosa!");
                 location.reload();
             }
         }
@@ -245,21 +256,27 @@
 
             const REGLAS = `🚨 REGLAS IMPORTANTES:\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.\n* Disfruta tu programación 🍿.`;
 
-            let msj = "";
-            if (servicios.length > 1) {
-                let bloque = "";
-                servicios.forEach((s, i) => {
-                    bloque += `📺 SERVICIO: ${s.trim()}\n✉️ Usuario: ${(correos[i] || correos[0] || '---').trim()}\n🔑 Contraseña: ${(claves[i] || claves[0] || '---').trim()}\n👤 Perfil: ${(perfiles[i] || perfiles[0] || '---').trim()}\n🔐 PIN: ${(pins[i] || pins[0] || '---').trim()}\n🗓 Vence: ${fechaVenc}\n------------------------------\n`;
-                });
-                msj = `🚀 SERVICIOS ACTIVOS - ${cliente[1]} ⭐\nGracias por preferir Streaming Planet\n\n${bloque}\n${REGLAS}`;
-            } else {
-                msj = `🚀 SERVICIO ACTIVO - ${cliente[1]} ⭐\nGracias por preferir Streaming Planet\n\n📺 SERVICIO: ${servicios[0].trim()}\n✉️ Usuario: ${correos[0].trim()}\n🔑 Contraseña: ${claves[0].trim()}\n👤 Perfil: ${perfiles[0].trim()}\n🔐 PIN: ${pins[0].trim()}\n🗓 Vence: ${fechaVenc}\n------------------------------\n\n${REGLAS}`;
-            }
-            window.open(`https://api.whatsapp.com/send?phone=${cliente[2].toString().replace(/\D/g, '')}&text=${encodeURIComponent(msj)}`, "_blank");
+            let bloqueServicios = "";
+            servicios.forEach((s, i) => {
+                bloqueServicios += `📺 SERVICIO: ${s.trim()}\n` +
+                                   `✉️ Usuario: ${(correos[i] || correos[0] || '---').trim()}\n` +
+                                   `🔑 Contraseña: ${(claves[i] || claves[0] || '---').trim()}\n` +
+                                   `👤 Perfil: ${(perfiles[i] || perfiles[0] || '---').trim()}\n` +
+                                   `🔐 PIN: ${(pins[i] || pins[0] || '---').trim()}\n` +
+                                   `🗓 Vence: ${fechaVenc}\n` +
+                                   `------------------------------\n`;
+            });
+
+            const mensajeFinal = `🚀 SERVICIO ACTIVO - ${cliente[1]} ⭐\n` +
+                                 `Gracias por preferir Streaming Planet\n\n` +
+                                 bloqueServicios + `\n` + REGLAS;
+
+            window.open(`https://api.whatsapp.com/send?phone=${cliente[2].toString().replace(/\D/g, '')}&text=${encodeURIComponent(mensajeFinal)}`, "_blank");
         }
 
         window.onload = () => {
-            initGrid(); cargarDatos();
+            initGrid(); 
+            cargarDatos();
             document.getElementById('vencimiento').value = new Date(Date.now() + 2592000000).toISOString().split('T')[0];
         };
     </script>
