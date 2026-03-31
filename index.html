@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planet Streaming | Panel Corregido</title>
+    <title>Planet Streaming | Panel Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -24,15 +24,13 @@
 <body class="p-4">
 
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- FORMULARIO -->
         <div class="lg:col-span-4">
             <div class="sidebar-card shadow-xl">
-                <h2 class="text-blue-400 font-black text-xs mb-5 uppercase tracking-widest">Panel Planet Streaming</h2>
+                <h2 class="text-blue-400 font-black text-xs mb-5 uppercase tracking-widest">Ventas Planet Streaming</h2>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-2">
                         <input id="c_nombre" type="text" placeholder="CLIENTE" class="input-dark font-bold uppercase">
-                        <input id="c_telefono" type="text" placeholder="WHATSAPP (Ej: 58412...)" class="input-dark">
+                        <input id="c_telefono" type="text" placeholder="WHATSAPP" class="input-dark">
                     </div>
                     <div class="grid grid-cols-3 gap-2" id="selectorApps"></div>
                     <div id="contenedorFormularios" class="space-y-3 max-h-[350px] overflow-y-auto pr-2"></div>
@@ -46,11 +44,10 @@
             </div>
         </div>
 
-        <!-- TABLA -->
         <div class="lg:col-span-8">
             <div class="sidebar-card !p-0 overflow-hidden shadow-2xl">
-                <div class="p-4 bg-white/5 border-b border-slate-800 flex justify-between items-center">
-                    <input id="bus" onkeyup="renderTabla()" type="text" placeholder="Buscar cliente..." class="bg-black/40 border border-slate-700 rounded-lg px-4 py-2 text-xs w-full outline-none focus:border-blue-500">
+                <div class="p-4 bg-white/5 border-b border-slate-800">
+                    <input id="bus" onkeyup="renderTabla()" type="text" placeholder="Buscar cliente o servicio..." class="bg-black/40 border border-slate-700 rounded-lg px-4 py-2 text-xs w-full outline-none focus:border-blue-500">
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
@@ -58,21 +55,21 @@
                             <tr>
                                 <th class="p-4">Cliente / Combo</th>
                                 <th class="p-4 text-center">Días</th>
-                                <th class="p-4 text-center">Avisos WhatsApp</th>
+                                <th class="p-4 text-center">Acciones WhatsApp</th>
                                 <th class="p-4 text-center">Gestión</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800/50 uppercase"></tbody>
                     </table>
                 </div>
-                <div id="loader" class="p-10 text-center text-slate-500 font-bold italic animate-pulse">Sincronizando base de datos...</div>
+                <div id="loader" class="p-10 text-center text-slate-500 font-bold italic animate-pulse">Conectando con Google Sheets...</div>
             </div>
         </div>
     </div>
 
     <script>
-        // PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
-        const API_URL = "TU_URL_DE_APPS_SCRIPT_AQUI";
+        // URL YA CONFIGURADA
+        const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
         
         const APPS = ["NETFLIX", "MAX", "PRIME", "DISNEY+", "IPTV", "YOUTUBE", "SPOTIFY", "CANVA", "CAPCUT", "TELELATINO", "PARAMOUNT"];
         let seleccionadas = new Set();
@@ -103,8 +100,8 @@
             div.className = 'form-block';
             div.innerHTML = `
                 <div class="text-[10px] font-black text-blue-400 mb-2 uppercase">${app}</div>
-                <input type="text" placeholder="Correo" data-app="${app}" class="f-mail input-dark mb-1.5">
-                <input type="text" placeholder="Clave" data-app="${app}" class="f-pass input-dark mb-1.5">
+                <input type="text" placeholder="Correo" class="f-mail input-dark mb-1.5">
+                <input type="text" placeholder="Clave" class="f-pass input-dark mb-1.5">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" placeholder="Perfil" class="f-perf input-dark">
                     <input type="text" placeholder="PIN" class="f-pin input-dark">
@@ -128,11 +125,11 @@
                 vencimiento: document.getElementById('c_vence').value
             };
 
-            if(!data.nombre || seleccionadas.size === 0 || !data.vencimiento) return alert("⚠️ Faltan datos obligatorios.");
+            if(!data.nombre || seleccionadas.size === 0 || !data.vencimiento) return alert("⚠️ Faltan datos.");
             
-            btn.innerHTML = "PROCESANDO..."; btn.disabled = true;
+            btn.innerHTML = "GUARDANDO..."; btn.disabled = true;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            location.reload();
+            setTimeout(() => location.reload(), 1500);
         }
 
         async function cargarDatos() {
@@ -156,14 +153,11 @@
 
                 let fVence = new Date(vence);
                 let diff = Math.ceil((fVence.getTime() - hoy.getTime()) / 86400000);
-                
                 let stClase = diff > 3 ? "status-green" : (diff >= 0 ? "status-yellow" : "status-red");
                 let stTexto = diff > 0 ? `${diff} DÍAS` : (diff === 0 ? "VENCE HOY" : "VENCIDO");
 
-                // --- LOGICA DE MENSAJE MEJORADA ---
+                // Lógica de Mensajes WhatsApp
                 let msgEntrega = `⭐ *PLANET STREAMING* ⭐\n\nHola *${nom}*, tus accesos:\n\n`;
-                
-                // Aseguramos que los datos sean tratados como strings antes del split
                 const s_list = (serv || "").toString().split(' + ');
                 const m_list = (mail || "").toString().split(' | ');
                 const k_list = (pass || "").toString().split(' | ');
@@ -172,10 +166,9 @@
 
                 s_list.forEach((s, i) => {
                     if (s.trim() !== "") {
-                        msgEntrega += `📺 *${s}*\n👤 *User:* ${m_list[i] || 'N/A'}\n🔑 *Pass:* ${k_list[i] || 'N/A'}\n👤 *Perfil:* ${p_list[i] || 'N/A'}\n📌 *PIN:* ${pin_list[i] || 'N/A'}\n\n`;
+                        msgEntrega += `📺 *${s.trim()}*\n👤 *User:* ${m_list[i] || 'N/A'}\n🔑 *Pass:* ${k_list[i] || 'N/A'}\n👤 *Perfil:* ${p_list[i] || 'N/A'}\n📌 *PIN:* ${pin_list[i] || 'N/A'}\n\n`;
                     }
                 });
-                
                 msgEntrega += `🗓️ *Vence:* ${fVence.toLocaleDateString('es-ES')}`;
 
                 let msg3dias = `⚠️ *RECORDATORIO* - Hola *${nom}*, tu combo de *${serv}* vence en *3 días*. ¡Renueva con tiempo!`;
@@ -191,8 +184,8 @@
                     <td class="p-4 text-center"><span class="status-pill ${stClase}">${stTexto}</span></td>
                     <td class="p-4 text-center">
                         <div class="flex justify-center gap-1.5">
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgEntrega)}" target="_blank" class="action-btn bg-blue-600" title="Entregar Cuentas"><i class="fas fa-key"></i></a>
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg3dias)}" target="_blank" class="action-btn bg-orange-500" title="Aviso 3 Días"><i class="fas fa-bell"></i></a>
+                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgEntrega)}" target="_blank" class="action-btn bg-blue-600" title="Entregar"><i class="fas fa-key"></i></a>
+                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg3dias)}" target="_blank" class="action-btn bg-orange-500" title="3 Días"><i class="fas fa-bell"></i></a>
                             <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgHoy)}" target="_blank" class="action-btn bg-yellow-500 text-black" title="Vence Hoy"><i class="fas fa-clock"></i></a>
                             <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgVencido)}" target="_blank" class="action-btn bg-red-600" title="Vencido"><i class="fas fa-times-circle"></i></a>
                         </div>
@@ -209,22 +202,19 @@
         }
 
         async function renovar(id) {
-            if(!confirm("¿Renovar este combo completo por 30 días?")) return;
+            if(!confirm("¿Renovar este combo por 30 días?")) return;
             const btn = document.getElementById(`btn-ren-${id}`);
             btn.innerHTML = "..."; btn.disabled = true;
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
-                location.reload();
-            } catch(e) { 
-                alert("Error al renovar"); 
-                btn.innerHTML = '<i class="fas fa-sync"></i>'; btn.disabled = false;
-            }
+                setTimeout(() => location.reload(), 1000);
+            } catch(e) { alert("Error al renovar"); btn.innerHTML = '<i class="fas fa-sync"></i>'; btn.disabled = false; }
         }
 
         async function eliminar(id) {
             if(!confirm("¿Eliminar definitivamente?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
-            location.reload();
+            setTimeout(() => location.reload(), 1000);
         }
     </script>
 </body>
