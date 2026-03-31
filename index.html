@@ -3,58 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planet Streaming | Panel Administrativo</title>
+    <title>Planet Streaming | Panel Alertas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #0b121f; --card: #161b2c; --border: #1e293b; --blue: #2563eb; }
         body { background: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; }
         .sidebar-card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.2rem; }
-        .input-dark { background: #0f172a; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem; width: 100%; color: white; font-size: 13px; outline: none; }
-        .input-dark:focus { border-color: var(--blue); }
-        .btn-service { background: #1e293b; border: 1px solid #334155; border-radius: 0.5rem; padding: 0.5rem; font-size: 10px; color: #94a3b8; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .btn-service.active { background: var(--blue); color: white; border-color: #60a5fa; box-shadow: 0 0 10px rgba(37, 99, 235, 0.4); }
-        .status-pill { border-radius: 20px; padding: 3px 8px; font-weight: 800; font-size: 10px; border: 1px solid; text-align: center; display: inline-block; min-width: 85px; }
+        .input-dark { background: #0f172a; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem; width: 100%; color: white; font-size: 13px; outline: none; border: 1px solid var(--border); }
+        .btn-service { background: #1e293b; border: 1px solid #334155; border-radius: 0.5rem; padding: 0.5rem; font-size: 10px; color: #94a3b8; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-service.active { background: var(--blue); color: white; border-color: #60a5fa; }
+        .status-pill { border-radius: 20px; padding: 4px 12px; font-weight: 800; font-size: 10px; border: 1px solid; text-align: center; display: inline-block; min-width: 95px; }
         .status-green { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: #10b981; }
         .status-yellow { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: #f59e0b; }
         .status-red { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: #ef4444; }
-        .action-btn { border-radius: 5px; width: 30px; height: 30px; font-size: 11px; color: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+        .action-btn { border-radius: 6px; width: 34px; height: 34px; font-size: 12px; color: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body class="p-2 md:p-4">
 
     <div class="max-w-[1500px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
         <div class="lg:col-span-3 space-y-4">
             <div class="sidebar-card">
-                <h3 class="text-blue-400 font-black mb-4 text-xs uppercase tracking-tighter">Nueva Venta</h3>
+                <h3 class="text-blue-400 font-black mb-4 text-xs uppercase tracking-widest">Nueva Venta</h3>
                 <div class="space-y-3">
                     <input id="nombre" type="text" placeholder="CLIENTE" class="input-dark font-bold uppercase">
                     <input id="telefono" type="text" placeholder="WHATSAPP" class="input-dark">
-                    
                     <div class="bg-black/20 p-2 rounded-lg border border-slate-800">
                         <div class="grid grid-cols-3 gap-1" id="gridServicios"></div>
                     </div>
-
                     <div class="grid grid-cols-2 gap-2">
-                        <input id="costo" type="number" step="0.01" placeholder="Costo $" class="input-dark text-center">
-                        <input id="precio" type="number" step="0.01" placeholder="Venta $" class="input-dark text-center text-blue-300 font-bold">
+                        <input id="costo" type="number" step="0.01" placeholder="COSTO $" class="input-dark text-center">
+                        <input id="precio" type="number" step="0.01" placeholder="VENTA $" class="input-dark text-center text-blue-300 font-bold">
                     </div>
-                    
-                    <input id="correo" type="text" placeholder="Correo / Usuario" class="input-dark">
-                    <input id="clave" type="text" placeholder="Contraseña" class="input-dark">
-                    
+                    <input id="correo" type="text" placeholder="CORREO" class="input-dark">
+                    <input id="clave" type="text" placeholder="CLAVE" class="input-dark">
                     <div class="grid grid-cols-2 gap-2">
-                        <input id="perfil" type="text" placeholder="Perfil" class="input-dark">
+                        <input id="perfil" type="text" placeholder="PERFIL" class="input-dark">
                         <input id="pin" type="text" placeholder="PIN" class="input-dark">
                     </div>
-
-                    <label class="text-[10px] text-slate-500 font-bold ml-1 uppercase">Fecha de Vencimiento:</label>
                     <input id="vencimiento" type="date" class="input-dark font-bold text-emerald-400">
-                    
-                    <button onclick="enviarVenta()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 rounded-lg uppercase text-xs">
-                        Registrar Venta
-                    </button>
+                    <button onclick="enviarVenta()" id="btnGuardar" class="w-full bg-blue-600 text-white font-black py-3 rounded-lg uppercase text-xs">Guardar Registro</button>
                 </div>
             </div>
         </div>
@@ -62,49 +51,41 @@
         <div class="lg:col-span-9">
             <div class="sidebar-card !p-0 overflow-hidden">
                 <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-white/5">
-                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar cliente o servicio..." class="w-full max-w-sm bg-black/40 border border-slate-700 rounded-md px-3 py-1.5 text-xs outline-none">
-                    <div class="text-[10px] font-bold text-slate-500 ml-4">PLANET STREAMING v4.0</div>
+                    <input id="buscador" onkeyup="renderizarTabla()" type="text" placeholder="Buscar..." class="w-full max-w-sm bg-black/40 border border-slate-700 rounded-md px-3 py-1.5 text-xs outline-none">
+                    <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Avisos de Vencimiento Activos</div>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="w-full text-left">
                         <thead class="text-[10px] text-slate-500 uppercase bg-black/40 border-b border-slate-800">
                             <tr>
-                                <th class="p-3 text-left">Cliente / Servicio</th>
-                                <th class="p-3 text-center">Estado</th>
-                                <th class="p-3 text-center">Vence</th>
+                                <th class="p-3">Cliente / Servicio</th>
+                                <th class="p-3 text-center">Días Restantes</th>
+                                <th class="p-3 text-center">Fecha Vence</th>
                                 <th class="p-3 text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800/50 text-[11px] uppercase"></tbody>
                     </table>
                 </div>
-                <div id="loader" class="p-10 text-center text-slate-500 italic animate-pulse">Cargando base de datos...</div>
+                <div id="loader" class="p-10 text-center text-slate-500 italic">Sincronizando...</div>
             </div>
         </div>
     </div>
 
     <script>
-        // URL DE TU IMPLEMENTACIÓN
         const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec"; 
-
         let clientesGlobal = [];
         let servicioActivo = "NETFLIX";
         const servicios = ["NETFLIX", "MAX", "PRIME VIDEO", "DISNEY+", "IPTV", "YOUTUBE", "SPOTIFY", "CANVA", "CAPCUT", "TELELATINO", "VIKI", "PARAMOUNT+"];
 
         window.onload = () => {
-            const grid = document.getElementById('gridServicios');
-            grid.innerHTML = servicios.map(s => `
-                <button onclick="selServicio(this, '${s}')" class="btn-service ${s==='NETFLIX'?'active':''}">
-                    ${s}
-                </button>
-            `).join('');
+            document.getElementById('gridServicios').innerHTML = servicios.map(s => `<button onclick="selServicio(this, '${s}')" class="btn-service ${s==='NETFLIX'?'active':''}">${s}</button>`).join('');
             cargarDatos();
         };
 
         function selServicio(btn, s) {
             document.querySelectorAll('.btn-service').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            servicioActivo = s;
+            btn.classList.add('active'); servicioActivo = s;
         }
 
         async function cargarDatos() {
@@ -123,28 +104,33 @@
             let html = "";
 
             clientesGlobal.forEach(c => {
-                // MAPEO SEGÚN TU EXCEL: ID(0), Nom(1), Tel(2), Serv(3), Cost(4), Prec(5), Mail(6), Pass(7), Perf(8), Pin(9), Vence(10)
                 const [id, nom, tel, serv, costo, precio, mail, pass, perf, pin, vence] = c;
                 if(!nom) return;
 
                 if(nom.toString().toLowerCase().includes(buscar) || serv.toString().toLowerCase().includes(buscar)) {
-                    let fVence = new Date(vence);
-                    fVence.setHours(0,0,0,0);
+                    let fVence = new Date(vence); fVence.setHours(0,0,0,0);
+                    let diff = Math.ceil((fVence.getTime() - hoy.getTime()) / 86400000);
                     
-                    let stClase = "";
-                    let stTexto = "";
+                    let stClase = "status-green"; let stTexto = `${diff} DÍAS`;
+                    let msgAlerta = `⭐ *PLANET STREAMING* ⭐\n\n📺 *${serv}*\n👤 *User:* ${mail}\n🔑 *Pass:* ${pass}\n👤 *Perfil:* ${perf}\n📌 *PIN:* ${pin}\n🗓️ *Vence:* ${fVence.toLocaleDateString()}`;
+                    let iconBtn = "fa-key";
+                    let colorBtn = "bg-blue-600";
 
-                    if(isNaN(fVence.getTime())) {
+                    // LOGICA DE ALERTAS
+                    if (diff <= 3 && diff > 0) {
+                        stClase = "status-yellow";
+                        colorBtn = "bg-orange-500";
+                        iconBtn = "fa-bell";
+                        msgAlerta = `⚠️ *AVISO DE VENCIMIENTO* ⚠️\n\nHola *${nom}*, te recordamos que tu servicio de *${serv}* vence en *${diff} días*. \n\n¡Renueva a tiempo para no perder tu pantalla! 🚀`;
+                    } else if (diff <= 0) {
                         stClase = "status-red";
-                        stTexto = "ERROR FECHA";
-                    } else {
-                        let diff = Math.ceil((fVence.getTime() - hoy.getTime()) / (86400000));
-                        stClase = diff < 0 ? "status-red" : (diff <= 3 ? "status-yellow" : "status-green");
-                        stTexto = diff < 0 ? `VENCIDO (${Math.abs(diff)}d)` : (diff === 0 ? "HOY" : `${diff} DÍAS`);
+                        stTexto = diff === 0 ? "HOY" : `CORTE (${Math.abs(diff)}D)`;
+                        colorBtn = "bg-red-500";
+                        iconBtn = "fa-calendar-times";
+                        msgAlerta = `🚫 *SERVICIO VENCIDO* 🚫\n\nHola *${nom}*, tu servicio de *${serv}* ha vencido. \n\nPara seguir disfrutando de la mejor programación, por favor realiza tu pago de renovación. 📲`;
                     }
 
-                    const wa = (msg) => `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg)}`;
-                    const msgAcceso = `⭐ *PLANET STREAMING* ⭐\n\n📺 *${serv}*\n👤 *User:* ${mail}\n🔑 *Pass:* ${pass}\n👤 *Perfil:* ${perf}\n📌 *PIN:* ${pin}\n🗓️ *Vence:* ${isNaN(fVence.getTime()) ? '---' : fVence.toLocaleDateString()}`;
+                    const wa = `https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgAlerta)}`;
 
                     html += `
                     <tr class="hover:bg-white/5 transition-all">
@@ -156,9 +142,9 @@
                         <td class="p-3 text-center font-mono text-slate-400">${isNaN(fVence.getTime()) ? '---' : fVence.toLocaleDateString()}</td>
                         <td class="p-3 text-center">
                             <div class="flex justify-center gap-1">
-                                <a href="${wa(msgAcceso)}" target="_blank" class="action-btn bg-blue-600" title="Enviar Acceso"><i class="fas fa-key"></i></a>
-                                <button onclick="renovar('${id}')" class="action-btn bg-emerald-600" title="Renovar"><i class="fas fa-sync"></i></button>
-                                <button onclick="eliminar('${id}')" class="action-btn bg-red-600" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                <a href="${wa}" target="_blank" class="action-btn ${colorBtn}" title="Enviar Aviso"><i class="fas ${iconBtn}"></i></a>
+                                <button onclick="renovar('${id}')" class="action-btn bg-emerald-600"><i class="fas fa-sync"></i></button>
+                                <button onclick="eliminar('${id}')" class="action-btn bg-red-600"><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;
@@ -168,39 +154,29 @@
         }
 
         async function enviarVenta() {
-            const btn = document.getElementById('btnGuardar');
             const data = {
-                id: Date.now(),
-                nombre: document.getElementById('nombre').value.toUpperCase(),
-                telefono: document.getElementById('telefono').value,
-                servicio: servicioActivo,
-                costo: document.getElementById('costo').value || 0,
-                precio: document.getElementById('precio').value || 0,
-                correo: document.getElementById('correo').value,
-                clave: document.getElementById('clave').value,
-                perfil: document.getElementById('perfil').value || "UNICO",
-                pin: document.getElementById('pin').value || "N/A",
+                id: Date.now(), nombre: document.getElementById('nombre').value.toUpperCase(),
+                telefono: document.getElementById('telefono').value, servicio: servicioActivo,
+                costo: document.getElementById('costo').value, precio: document.getElementById('precio').value,
+                correo: document.getElementById('correo').value, clave: document.getElementById('clave').value,
+                perfil: document.getElementById('perfil').value, pin: document.getElementById('pin').value,
                 vencimiento: document.getElementById('vencimiento').value
             };
-
-            if(!data.nombre || !data.vencimiento) return alert("Nombre y Fecha son obligatorios");
-
-            btn.disabled = true;
-            btn.innerText = "Guardando...";
+            if(!data.nombre || !data.vencimiento) return alert("Nombre y Fecha obligatorios");
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            setTimeout(() => { location.reload(); }, 1500);
+            setTimeout(() => location.reload(), 1500);
         }
 
         async function renovar(id) {
-            if(!confirm("¿Renovar 30 días adicionales?")) return;
+            if(!confirm("¿Deseas sumar 30 días de servicio?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
-            setTimeout(() => { location.reload(); }, 1000);
+            setTimeout(() => location.reload(), 1000);
         }
 
         async function eliminar(id) {
-            if(!confirm("¿Deseas eliminar este cliente permanentemente?")) return;
+            if(!confirm("¿Borrar permanentemente?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
-            setTimeout(() => { location.reload(); }, 1000);
+            setTimeout(() => location.reload(), 1000);
         }
     </script>
 </body>
