@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planet Streaming | Panel Full</title>
+    <title>Planet Streaming | Panel Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -14,25 +14,21 @@
         .platform-btn { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px; cursor: pointer; transition: 0.2s; text-align: center; font-size: 10px; font-weight: 800; color: #94a3b8; }
         .platform-btn.active { background: var(--blue); border-color: #60a5fa; color: white; transform: scale(1.05); }
         .form-block { background: rgba(30, 41, 59, 0.5); border-left: 4px solid var(--blue); padding: 12px; margin-top: 8px; border-radius: 0 8px 8px 0; }
-        
-        /* ESTILO DE PÍLDORAS ANTERIOR */
-        .status-pill { border-radius: 20px; padding: 4px 12px; font-weight: 800; font-size: 10px; border: 1px solid; text-align: center; display: inline-block; min-width: 90px; }
+        .status-pill { border-radius: 20px; padding: 4px 12px; font-weight: 800; font-size: 10px; border: 1px solid; text-align: center; display: inline-block; min-width: 85px; }
         .status-green { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: #10b981; }
         .status-red { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: #ef4444; }
-        
-        /* ESTILO DE BOTONES DE ACCIÓN */
-        .action-btn { border-radius: 6px; width: 32px; height: 32px; font-size: 11px; color: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-        .action-btn:hover { transform: scale(1.1); filter: brightness(1.2); }
+        .status-yellow { background: rgba(234, 179, 8, 0.1); color: #eab308; border-color: #eab308; }
+        .action-btn { border-radius: 6px; width: 30px; height: 30px; font-size: 11px; color: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: none; }
     </style>
 </head>
-<body class="p-4 md:p-6">
+<body class="p-4">
 
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <!-- FORMULARIO -->
-        <div class="lg:col-span-4 space-y-4">
+        <div class="lg:col-span-4">
             <div class="sidebar-card shadow-xl">
-                <h2 class="text-blue-400 font-black text-xs mb-5 uppercase tracking-widest">Panel de Ventas Combo</h2>
+                <h2 class="text-blue-400 font-black text-xs mb-5 uppercase tracking-widest">Ventas Multi-App</h2>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-2">
                         <input id="c_nombre" type="text" placeholder="CLIENTE" class="input-dark font-bold uppercase">
@@ -42,41 +38,42 @@
                     <div id="contenedorFormularios" class="space-y-3 max-h-[350px] overflow-y-auto pr-2"></div>
                     <div class="pt-4 border-t border-slate-800">
                         <input id="c_vence" type="date" class="input-dark mb-4 text-blue-400 font-bold text-center">
-                        <button onclick="guardarCombo()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl uppercase tracking-widest shadow-lg shadow-blue-900/40">
-                            Guardar y Sincronizar
+                        <button onclick="guardarCombo()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl uppercase shadow-lg">
+                            Guardar y Sincronizar Todo
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TABLA CON 4 BOTONES -->
+        <!-- TABLA -->
         <div class="lg:col-span-8">
-            <div class="sidebar-card !p-0 overflow-hidden border-slate-800 shadow-2xl">
-                <div class="p-4 bg-white/5 border-b border-slate-800 flex justify-between items-center">
-                    <input id="bus" onkeyup="renderTabla()" type="text" placeholder="Buscar cliente o servicio..." class="bg-black/40 border border-slate-700 rounded-lg px-4 py-2 text-xs w-72 outline-none focus:border-blue-500">
-                    <span class="text-[10px] text-slate-500 font-bold">PLANET STREAMING</span>
+            <div class="sidebar-card !p-0 overflow-hidden shadow-2xl">
+                <div class="p-4 bg-white/5 border-b border-slate-800">
+                    <input id="bus" onkeyup="renderTabla()" type="text" placeholder="Buscar cliente..." class="bg-black/40 border border-slate-700 rounded-lg px-4 py-2 text-xs w-full outline-none">
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="bg-black/40 text-[10px] uppercase text-slate-500 border-b border-slate-800">
                             <tr>
-                                <th class="p-4">Info Cliente / Combo</th>
+                                <th class="p-4">Cliente / Combo</th>
                                 <th class="p-4 text-center">Días</th>
-                                <th class="p-4 text-center">Acciones de Servicio</th>
+                                <th class="p-4 text-center">Avisos WhatsApp</th>
                                 <th class="p-4 text-center">Gestión</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800/50 uppercase"></tbody>
                     </table>
                 </div>
-                <div id="loader" class="p-10 text-center text-slate-600 animate-pulse font-bold uppercase italic">Sincronizando Excel...</div>
+                <div id="loader" class="p-10 text-center text-slate-500 font-bold italic animate-pulse">Cargando base de datos...</div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "TU_URL_DE_APPS_SCRIPT_AQUI";
+        // PEGA AQUÍ TU URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
+        
         const APPS = ["NETFLIX", "MAX", "PRIME", "DISNEY+", "IPTV", "YOUTUBE", "SPOTIFY", "CANVA", "CAPCUT", "TELELATINO", "PARAMOUNT"];
         let seleccionadas = new Set();
         let datosGlobal = [];
@@ -105,14 +102,13 @@
             div.id = `form-${app}`;
             div.className = 'form-block';
             div.innerHTML = `
-                <div class="text-[10px] font-black text-blue-400 mb-2">${app}</div>
-                <input type="text" placeholder="Correo" data-app="${app}" class="f-mail input-dark mb-1.5 font-semibold">
+                <div class="text-[10px] font-black text-blue-400 mb-2 uppercase">${app}</div>
+                <input type="text" placeholder="Correo" data-app="${app}" class="f-mail input-dark mb-1.5">
                 <input type="text" placeholder="Clave" data-app="${app}" class="f-pass input-dark mb-1.5">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" placeholder="Perfil" data-app="${app}" class="f-perf input-dark">
-                    <input type="text" placeholder="PIN" data-app="${app}" class="f-pin input-dark">
-                </div>
-            `;
+                    <input type="text" placeholder="Perfil" class="f-perf input-dark">
+                    <input type="text" placeholder="PIN" class="f-pin input-dark">
+                </div>`;
             document.getElementById('contenedorFormularios').appendChild(div);
         }
 
@@ -132,9 +128,9 @@
                 vencimiento: document.getElementById('c_vence').value
             };
 
-            if(!data.nombre || seleccionadas.size === 0 || !data.vencimiento) return alert("⚠️ Faltan datos obligatorios.");
+            if(!data.nombre || seleccionadas.size === 0 || !data.vencimiento) return alert("Faltan datos");
             
-            btn.innerHTML = "PROCESANDO..."; btn.disabled = true;
+            btn.innerHTML = "GUARDANDO..."; btn.disabled = true;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
             location.reload();
         }
@@ -145,7 +141,7 @@
                 datosGlobal = await res.json();
                 document.getElementById('loader').classList.add('hidden');
                 renderTabla();
-            } catch(e) { console.error("Error cargando:", e); }
+            } catch(e) { console.error("Error:", e); }
         }
 
         function renderTabla() {
@@ -160,11 +156,12 @@
 
                 let fVence = new Date(vence);
                 let diff = Math.ceil((fVence.getTime() - hoy.getTime()) / 86400000);
-                let stClase = diff > 0 ? "status-green" : "status-red";
-                let stTexto = diff > 0 ? `${diff} DÍAS` : (diff === 0 ? "VENCE HOY" : "VENCIDO");
                 
-                // 1. MENSAJE ENTREGA (AZUL)
-                let msgEntrega = `⭐ *PLANET STREAMING* ⭐\n\nHola *${nom}*, aquí tienes tus accesos:\n\n`;
+                let stClase = diff > 3 ? "status-green" : (diff >= 0 ? "status-yellow" : "status-red");
+                let stTexto = diff > 0 ? `${diff} DÍAS` : (diff === 0 ? "VENCE HOY" : "VENCIDO");
+
+                // MENSAJES WHATSAPP
+                let msgEntrega = `⭐ *PLANET STREAMING* ⭐\n\nHola *${nom}*, tus accesos:\n\n`;
                 const s_list = serv.split(' + ');
                 const m_list = mail.toString().split(' | ');
                 const k_list = pass.toString().split(' | ');
@@ -176,14 +173,12 @@
                 });
                 msgEntrega += `🗓️ *Vence:* ${fVence.toLocaleDateString()}`;
 
-                // 2. MENSAJE AVISO 3 DÍAS (NARANJA)
-                let msgAviso3 = `⚠️ *RECORDATORIO DE PAGO*\n\nHola *${nom}*, tus servicios (*${serv}*) vencen en *3 días*. ¡Renueva ahora para no perder tu perfil! 📲`;
-
-                // 3. MENSAJE VENCIMIENTO (AMARILLO)
-                let msgVencido = `🚫 *SERVICIO VENCIDO*\n\nHola *${nom}*, tu combo de *${serv}* ha vencido hoy. Envíanos el comprobante para reactivar de inmediato. 🚀`;
+                let msg3dias = `⚠️ *RECORDATORIO* - Hola *${nom}*, tu combo de *${serv}* vence en *3 días*. ¡Renueva con tiempo!`;
+                let msgHoy = `🚨 *VENCE HOY* - Hola *${nom}*, tu combo de *${serv}* vence hoy. Evita el corte enviando tu pago ahora.`;
+                let msgVencido = `🚫 *CORTE DE SERVICIO* - Hola *${nom}*, tu servicio de *${serv}* ha vencido. Reactiva enviando tu comprobante.`;
 
                 html += `
-                <tr class="hover:bg-white/5 transition-all">
+                <tr class="hover:bg-white/5 transition-all text-[11px]">
                     <td class="p-4">
                         <div class="text-blue-400 font-bold">${nom}</div>
                         <div class="text-[9px] text-slate-500 font-mono">${serv}</div>
@@ -191,14 +186,17 @@
                     <td class="p-4 text-center"><span class="status-pill ${stClase}">${stTexto}</span></td>
                     <td class="p-4 text-center">
                         <div class="flex justify-center gap-1.5">
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgEntrega)}" target="_blank" class="action-btn bg-blue-600" title="Entregar"><i class="fas fa-key"></i></a>
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgAviso3)}" target="_blank" class="action-btn bg-orange-500" title="Aviso 3 días"><i class="fas fa-bell"></i></a>
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgVencido)}" target="_blank" class="action-btn bg-yellow-500 text-black" title="Aviso Vencimiento"><i class="fas fa-clock"></i></a>
-                            <button onclick="renovar('${id}')" class="action-btn bg-emerald-600" title="Renovar +30 días"><i class="fas fa-sync"></i></button>
+                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgEntrega)}" target="_blank" class="action-btn bg-blue-600" title="Entrega"><i class="fas fa-key"></i></a>
+                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msg3dias)}" target="_blank" class="action-btn bg-orange-500" title="3 Días"><i class="fas fa-bell"></i></a>
+                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgHoy)}" target="_blank" class="action-btn bg-yellow-500 text-black" title="Vence Hoy"><i class="fas fa-clock"></i></a>
+                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgVencido)}" target="_blank" class="action-btn bg-red-600" title="Vencido"><i class="fas fa-times-circle"></i></a>
                         </div>
                     </td>
                     <td class="p-4 text-center">
-                        <button onclick="eliminar('${id}')" class="action-btn bg-red-600/20 text-red-500 border border-red-500/50"><i class="fas fa-trash-alt"></i></button>
+                        <div class="flex justify-center gap-1.5">
+                            <button id="btn-ren-${id}" onclick="renovar('${id}')" class="action-btn bg-emerald-600" title="Renovar +30"><i class="fas fa-sync"></i></button>
+                            <button onclick="eliminar('${id}')" class="action-btn bg-slate-700 text-red-400 border border-red-900/30"><i class="fas fa-trash-alt"></i></button>
+                        </div>
                     </td>
                 </tr>`;
             });
@@ -206,13 +204,20 @@
         }
 
         async function renovar(id) {
-            if(!confirm("¿Renovar este combo por 30 días?")) return;
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
-            location.reload();
+            if(!confirm("¿Renovar este combo completo por 30 días?")) return;
+            const btn = document.getElementById(`btn-ren-${id}`);
+            btn.innerHTML = "..."; btn.disabled = true;
+            try {
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'RENEW', id: id }) });
+                location.reload();
+            } catch(e) { 
+                alert("Error al renovar"); 
+                btn.innerHTML = '<i class="fas fa-sync"></i>'; btn.disabled = false;
+            }
         }
 
         async function eliminar(id) {
-            if(!confirm("¿Eliminar este cliente permanentemente?")) return;
+            if(!confirm("¿Eliminar definitivamente?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             location.reload();
         }
