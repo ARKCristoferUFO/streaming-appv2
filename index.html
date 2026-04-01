@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #0b121f; --card: #161b2c; --border: #1e293b; --blue: #2563eb; }
-        body { background: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 12px; }
+        body { background: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; font-size: 11px; }
         .sidebar-card { background: var(--card); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; }
-        .input-dark { background: #0f172a; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem; width: 100%; color: white; outline: none; border: 1px solid var(--border); }
+        .input-dark { background: #0f172a; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.6rem; width: 100%; color: white; outline: none; }
         .platform-btn { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px; cursor: pointer; transition: 0.2s; text-align: center; font-size: 10px; font-weight: 800; color: #94a3b8; }
         .platform-btn.active { background: var(--blue); border-color: #60a5fa; color: white; transform: scale(1.05); }
         .form-block { background: rgba(30, 41, 59, 0.5); border-left: 4px solid var(--blue); padding: 12px; margin-top: 8px; border-radius: 0 8px 8px 0; }
@@ -18,59 +18,71 @@
         .status-green { background: rgba(16, 185, 129, 0.1); color: #10b981; border-color: #10b981; }
         .status-red { background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: #ef4444; }
         .status-yellow { background: rgba(234, 179, 8, 0.1); color: #eab308; border-color: #eab308; }
-        .action-btn { border-radius: 6px; width: 30px; height: 30px; font-size: 11px; color: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: none; }
+        .action-btn { border-radius: 6px; width: 32px; height: 32px; font-size: 12px; color: white; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
     </style>
 </head>
 <body class="p-4">
 
     <div class="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- FORMULARIO IZQUIERDA -->
         <div class="lg:col-span-4">
-            <div class="sidebar-card shadow-xl">
-                <h2 class="text-blue-400 font-black text-xs mb-5 uppercase tracking-widest">Planet Streaming</h2>
+            <div class="sidebar-card shadow-xl border-t-4 border-blue-600">
+                <h2 class="text-blue-400 font-black text-sm mb-5 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fas fa-rocket"></i> Planet Streaming
+                </h2>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-2">
                         <input id="c_nombre" type="text" placeholder="CLIENTE" class="input-dark font-bold uppercase">
                         <input id="c_telefono" type="text" placeholder="WHATSAPP" class="input-dark">
                     </div>
                     <div class="grid grid-cols-3 gap-2" id="selectorApps"></div>
-                    <div id="contenedorFormularios" class="space-y-3 max-h-[350px] overflow-y-auto pr-2"></div>
+                    <div id="contenedorFormularios" class="space-y-3 max-h-[300px] overflow-y-auto pr-2"></div>
                     <div class="pt-4 border-t border-slate-800">
+                        <label class="text-[10px] text-slate-500 font-bold ml-1">FECHA DE VENCIMIENTO</label>
                         <input id="c_vence" type="date" class="input-dark mb-4 text-blue-400 font-bold text-center">
-                        <button onclick="guardarCombo()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl uppercase shadow-lg">
-                            Guardar y Sincronizar
+                        <button onclick="guardarCombo()" id="btnGuardar" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl uppercase shadow-lg transition-all active:scale-95">
+                            Registrar y Sincronizar
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- TABLA DERECHA -->
         <div class="lg:col-span-8">
             <div class="sidebar-card !p-0 overflow-hidden shadow-2xl">
-                <div class="p-4 bg-white/5 border-b border-slate-800 flex justify-between items-center">
-                    <input id="bus" onkeyup="renderTabla()" type="text" placeholder="Buscar por cliente o servicio..." class="bg-black/40 border border-slate-700 rounded-lg px-4 py-2 text-xs w-full outline-none focus:border-blue-500">
+                <div class="p-4 bg-white/5 border-b border-slate-800 flex justify-between items-center gap-4">
+                    <div class="relative w-full">
+                        <i class="fas fa-search absolute left-3 top-3 text-slate-500"></i>
+                        <input id="bus" onkeyup="renderTabla()" type="text" placeholder="Buscar por cliente, correo o servicio..." class="bg-black/40 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-xs w-full outline-none focus:border-blue-500 transition-all">
+                    </div>
+                    <button onclick="cargarDatos()" class="bg-slate-800 p-2 rounded-lg hover:bg-slate-700 text-slate-300"><i class="fas fa-sync-alt"></i></button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="bg-black/40 text-[10px] uppercase text-slate-500 border-b border-slate-800">
                             <tr>
-                                <th class="p-4">Cliente / Combo</th>
-                                <th class="p-4 text-center">Estado / Días</th>
-                                <th class="p-4 text-center">WhatsApp</th>
+                                <th class="p-4">Cliente / Servicios</th>
+                                <th class="p-4 text-center">Estado</th>
+                                <th class="p-4 text-center">Enviar Accesos</th>
                                 <th class="p-4 text-center">Gestión</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTabla" class="divide-y divide-slate-800/50 uppercase"></tbody>
                     </table>
                 </div>
-                <div id="loader" class="p-10 text-center text-slate-500 font-bold italic animate-pulse">Cargando base de datos...</div>
+                <div id="loader" class="p-20 text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                    <p class="text-slate-500 font-bold animate-pulse">Sincronizando con Google Sheets...</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // PEGA TU URL DE IMPLEMENTACIÓN AQUÍ
         const API_URL = "https://script.google.com/macros/s/AKfycbxRFID-dOQuNJcC2b74GmpYXJ9Do6w5U0yQy89IPy1Y805owu__Xce3yRI9eDBnVpjz/exec";
         
-        // Plataformas actualizadas según tu negocio
         const APPS = ["NETFLIX", "MAX", "PRIME", "DISNEY+", "IPTV", "YOUTUBE", "SPOTIFY", "CANVA", "CAPCUT", "TELELATINO", "PARAMOUNT", "CRUNCHYROLL", "VIX"];
         let seleccionadas = new Set();
         let datosGlobal = [];
@@ -109,6 +121,80 @@
             document.getElementById('contenedorFormularios').appendChild(div);
         }
 
+        async function cargarDatos() {
+            document.getElementById('loader').classList.remove('hidden');
+            try {
+                const res = await fetch(API_URL + "?t=" + Date.now());
+                datosGlobal = await res.json();
+                document.getElementById('loader').classList.add('hidden');
+                renderTabla();
+            } catch(e) { 
+                console.error("Error:", e);
+                document.getElementById('loader').innerHTML = "⚠️ Error al leer Excel. Revisa los permisos.";
+            }
+        }
+
+        function renderTabla() {
+            const tbody = document.getElementById('cuerpoTabla');
+            const busq = document.getElementById('bus').value.toLowerCase();
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            let html = "";
+
+            datosGlobal.forEach(fila => {
+                // MAPEO CORREGIDO SEGÚN TU IMAGEN (A=0, B=1, ...)
+                const id = fila[0];
+                const nombre = fila[1];
+                const tel = fila[2];
+                const serv = fila[3];
+                const correo = fila[6]; // G
+                const clave = fila[7];  // H
+                const perfil = fila[8]; // I
+                const pin = fila[9];    // J
+                const vence = fila[10]; // K
+
+                if(!nombre || (!nombre.toLowerCase().includes(busq) && !serv.toLowerCase().includes(busq) && !correo.toLowerCase().includes(busq))) return;
+
+                let fVence = new Date(vence);
+                let diff = Math.ceil((fVence.getTime() - hoy.getTime()) / 86400000);
+                let stClase = diff > 3 ? "status-green" : (diff >= 0 ? "status-yellow" : "status-red");
+                let stTexto = diff > 0 ? `${diff} DÍAS` : (diff === 0 ? "VENCE HOY" : "VENCIDO");
+
+                // Generar mensaje de WhatsApp profesional
+                let msgEntrega = `⭐ *PLANET STREAMING* ⭐\n\nHola *${nombre}*, aquí tienes tus datos:\n\n`;
+                const s_list = serv.toString().split(' + ');
+                const m_list = correo.toString().split(' | ');
+                const k_list = clave.toString().split(' | ');
+                const p_list = perfil.toString().split(' | ');
+                const pin_list = pin.toString().split(' | ');
+
+                s_list.forEach((s, i) => {
+                    msgEntrega += `📺 *${s.trim()}*\n👤 *User:* ${m_list[i] || 'N/A'}\n🔑 *Pass:* ${k_list[i] || 'N/A'}\n👤 *Perfil:* ${p_list[i] || 'N/A'}\n📌 *PIN:* ${pin_list[i] || 'N/A'}\n\n`;
+                });
+                msgEntrega += `🗓️ *Vence:* ${fVence.toLocaleDateString('es-ES')}\n\n¡Gracias por tu compra! 🚀`;
+
+                html += `
+                <tr class="hover:bg-white/5 transition-all">
+                    <td class="p-4">
+                        <div class="text-blue-400 font-bold text-sm">${nombre}</div>
+                        <div class="text-[9px] text-slate-500 font-mono italic">${serv}</div>
+                        <div class="text-[9px] text-slate-400 mt-1"><i class="far fa-envelope"></i> ${correo}</div>
+                    </td>
+                    <td class="p-4 text-center"><span class="status-pill ${stClase}">${stTexto}</span></td>
+                    <td class="p-4 text-center">
+                        <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgEntrega)}" target="_blank" class="action-btn bg-green-600 hover:bg-green-500 shadow-lg shadow-green-900/20">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="eliminar('${id}')" class="action-btn bg-slate-700 hover:bg-red-600 text-slate-300 transition-colors">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
         async function guardarCombo() {
             const btn = document.getElementById('btnGuardar');
             const mails = Array.from(document.querySelectorAll('.f-mail')).map(i => i.value || 'N/A').join(' | ');
@@ -125,77 +211,17 @@
                 vencimiento: document.getElementById('c_vence').value
             };
 
-            if(!data.nombre || seleccionadas.size === 0 || !data.vencimiento) return alert("⚠️ Faltan datos.");
+            if(!data.nombre || seleccionadas.size === 0 || !data.vencimiento) return alert("⚠️ Rellena nombre, servicios y fecha.");
             
-            btn.innerHTML = "GUARDANDO..."; btn.disabled = true;
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            setTimeout(() => location.reload(), 1500);
-        }
-
-        async function cargarDatos() {
+            btn.innerHTML = "<i class='fas fa-sync animate-spin'></i> GUARDANDO..."; btn.disabled = true;
             try {
-                const res = await fetch(API_URL);
-                datosGlobal = await res.json();
-                document.getElementById('loader').classList.add('hidden');
-                renderTabla();
-            } catch(e) { console.error("Error:", e); }
-        }
-
-        function renderTabla() {
-            const tbody = document.getElementById('cuerpoTabla');
-            const busq = document.getElementById('bus').value.toLowerCase();
-            const hoy = new Date(); hoy.setHours(0,0,0,0);
-            let html = "";
-
-            datosGlobal.forEach(c => {
-                // MAPEO EXACTO SEGÚN TU IMAGEN: 
-                // A=id, B=nombre, C=tel, D=serv, E=costo, F=precio, G=mail, H=pass, I=perf, J=pin, K=vence
-                const [id, nom, tel, serv, , , mail, pass, perf, pin, vence] = c;
-                
-                if(!nom || (!nom.toLowerCase().includes(busq) && !serv.toLowerCase().includes(busq))) return;
-
-                let fVence = new Date(vence);
-                let diff = Math.ceil((fVence.getTime() - hoy.getTime()) / 86400000);
-                let stClase = diff > 3 ? "status-green" : (diff >= 0 ? "status-yellow" : "status-red");
-                let stTexto = diff > 0 ? `${diff} DÍAS` : (diff === 0 ? "VENCE HOY" : "VENCIDO");
-
-                let msgEntrega = `⭐ *PLANET STREAMING* ⭐\n\nHola *${nom}*, tus accesos:\n\n`;
-                const s_list = (serv || "").toString().split(' + ');
-                const m_list = (mail || "").toString().split(' | ');
-                const k_list = (pass || "").toString().split(' | ');
-                const p_list = (perf || "").toString().split(' | ');
-                const pin_list = (pin || "").toString().split(' | ');
-
-                s_list.forEach((s, i) => {
-                    if (s.trim() !== "") {
-                        msgEntrega += `📺 *${s.trim()}*\n👤 *User:* ${m_list[i] || 'N/A'}\n🔑 *Pass:* ${k_list[i] || 'N/A'}\n👤 *Perfil:* ${p_list[i] || 'N/A'}\n📌 *PIN:* ${pin_list[i] || 'N/A'}\n\n`;
-                    }
-                });
-                msgEntrega += `🗓️ *Vence:* ${fVence.toLocaleDateString('es-ES')}`;
-
-                html += `
-                <tr class="hover:bg-white/5 transition-all text-[11px]">
-                    <td class="p-4">
-                        <div class="text-blue-400 font-bold">${nom}</div>
-                        <div class="text-[9px] text-slate-500 font-mono italic">${serv}</div>
-                    </td>
-                    <td class="p-4 text-center"><span class="status-pill ${stClase}">${stTexto}</span></td>
-                    <td class="p-4 text-center">
-                        <div class="flex justify-center gap-1.5">
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(msgEntrega)}" target="_blank" class="action-btn bg-blue-600"><i class="fas fa-key"></i></a>
-                            <a href="https://api.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent('⚠️ Hola '+nom+', recordatorio de pago para '+serv)}" target="_blank" class="action-btn bg-orange-500"><i class="fas fa-bell"></i></a>
-                        </div>
-                    </td>
-                    <td class="p-4 text-center">
-                        <button onclick="eliminar('${id}')" class="action-btn bg-slate-700 text-red-400 border border-red-900/30"><i class="fas fa-trash-alt"></i></button>
-                    </td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+                setTimeout(() => location.reload(), 1500);
+            } catch(e) { alert("Error al guardar"); btn.disabled = false; }
         }
 
         async function eliminar(id) {
-            if(!confirm("¿Borrar cliente?")) return;
+            if(!confirm("¿Deseas eliminar este registro de la base de datos?")) return;
             await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
             setTimeout(() => location.reload(), 1000);
         }
