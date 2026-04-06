@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Planet - Panel Administrativo</title>
+    <title>Planet Streaming - Panel Administrativo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
@@ -250,7 +250,6 @@
             document.getElementById('gananciaAnio').innerText = uA.toFixed(2);
         }
 
-        // --- FUNCIÓN DE WHATSAPP CON TU NUEVO FORMATO ---
         function enviarMensaje(id, tipo) {
             const cliente = clientesGlobal.find(x => x[0].toString() === id.toString());
             if (!cliente) return;
@@ -271,9 +270,9 @@
                     body += `------------------------------\n📺 *SERVICIO:* ${s.trim()}\n✉️ *Usuario:* ${(cors[i]||cors[0]).trim()}\n🔑 *Clave:* ${(keys[i]||keys[0]).trim()}\n👤 *Perfil:* ${(perfs[i]||perfs[0]).trim()}\n🔐 *PIN:* ${(pins[i]||pins[0]).trim()}\n🗓 *Vence:* ${vence}\n------------------------------\n`;
                 });
                 
-                msj = `🚀 *SERVICIOS ACTIVOS - ${cliente[1].toUpperCase()}* ⭐\nGracias por tu compra en *Streaming Planet*\n\n${body}\n🚨 *REGLAS IMPORTANTES:*\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.\n* Disfruta tu programación 🍿`;
+                msj = `🚀 *SERVICIOS ACTIVOS - ${cliente[1].toUpperCase()}* ⭐\nGracias por tu compra en *Planet Streaming*\n\n${body}\n🚨 *REGLAS IMPORTANTES:*\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.\n* Disfruta tu programación 🍿`;
             } else if (tipo === 3) {
-                msj = `Hola *${cliente[1]}* 👋\n\nTe recordamos de *Streaming Planet* 🚀 que tu servicio de *${cliente[3]}* vence en *3 días*.\n\n¿Renovamos para no perder tu programación? 🍿`;
+                msj = `Hola *${cliente[1]}* 👋\n\nTe recordamos de *Planet Streaming* 🚀 que tu servicio de *${cliente[3]}* vence en *3 días*.\n\n¿Renovamos para no perder tu programación? 🍿`;
             } else if (tipo === 0) {
                 msj = `¡Hola *${cliente[1]}*! 🚨\n\nTu servicio de *${cliente[3]}* **VENCE HOY**. \n\nEvita cortes renovando antes de finalizar el día. ⏳\n\n¡Quedamos atentos!`;
             }
