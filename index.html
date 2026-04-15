@@ -134,7 +134,7 @@
                 n.push(b.querySelector('.val-pin').value || '---');
             });
             const data = {
-                id: Date.now().toString(), // Aseguramos que el ID sea string
+                id: Date.now().toString(),
                 nombre: nom.toUpperCase(), telefono: tel,
                 servicio: s.join(" + "), costo: document.getElementById('costoServicio').value,
                 precio: document.getElementById('precioVenta').value, correo: u.join(" , "),
@@ -149,7 +149,6 @@
 
         async function cargar() {
             try {
-                // Añadimos un timestamp para evitar caché del navegador
                 const r = await fetch(API_URL + "?t=" + Date.now());
                 clientesGlobal = await r.json();
                 document.getElementById('loader').style.display = 'none';
@@ -182,15 +181,14 @@
                 let txt = diff <= 0 ? "VENCIDO" : diff + " DÍAS";
                 const fechaLimpia = c[10].toString().split("T")[0];
 
-                // Usamos el ID (c[0]) directamente en las funciones
                 html += `<tr class="hover:bg-slate-800/20">
                     <td class="p-4"><b>${c[1]}</b><br><span class="text-slate-500 text-[9px] font-bold uppercase">${c[3]}</span></td>
                     <td class="p-4 text-center"><span class="px-3 py-1 rounded-full border font-black text-[9px] ${color}">${txt}</span></td>
                     <td class="p-4 text-center font-mono text-slate-500">${fechaLimpia}</td>
                     <td class="p-4 text-center">
                         <div class="flex flex-wrap gap-1 justify-center">
-                            <button onclick="enviarWA('${c[0]}','datos')" class="bg-blue-600 px-2 py-1 rounded-lg font-black text-[9px] uppercase hover:opacity-80">Enviar Cuenta</button>
-                            <button onclick="renovar('${c[0]}')" class="bg-emerald-600 px-2 py-1 rounded-lg font-black text-[9px] uppercase">Renovar</button>
+                            <button onclick="enviarWA('${c[0]}','datos')" class="bg-blue-600 px-2 py-1 rounded-lg font-black text-[9px] uppercase hover:opacity-80">Enviar</button>
+                            <button onclick="renovar('${c[0]}')" class="bg-emerald-600 px-2 py-1 rounded-lg font-black text-[9px] uppercase hover:scale-105 transition-transform">Renovar +30D</button>
                             <button onclick="enviarWA('${c[0]}',3)" class="bg-yellow-500 text-black px-2 py-1 rounded-lg font-black text-[9px] uppercase">3D</button>
                             <button onclick="enviarWA('${c[0]}',0)" class="bg-red-600 px-2 py-1 rounded-lg font-black text-[9px] uppercase">0D</button>
                         </div>
@@ -206,16 +204,44 @@
             document.getElementById('gananciaAnio').innerText = `$${uA.toFixed(2)}`;
         }
 
-        function enviarWA(id, tipo) {
-            // Buscamos el cliente forzando comparación de strings para evitar fallos de ID
+        async function renovar(id) {
             const c = clientesGlobal.find(x => x[0].toString().trim() === id.toString().trim());
-            
-            if (!c) {
-                alert("⚠️ Error: Datos aún no sincronizados. Refresca la página.");
-                return;
-            }
+            if (!c) return alert("Cliente no encontrado.");
 
-            const num = c[2].toString().replace(/\D/g, ''); // Limpiamos el número de cualquier carácter no numérico
+            if (confirm(`¿Renovar 30 días a ${c[1]}?\nEsto actualizará la fecha y sumará el volumen de venta hoy.`)) {
+                // Calcular nueva fecha: 30 días después de la fecha de vencimiento actual
+                let fv = procesarFecha(c[10]);
+                fv.setDate(fv.getDate() + 30);
+                const nuevaFechaStr = fv.toISOString().split('T')[0];
+
+                // Para actualizar el volumen, "engañamos" al sistema mandando el ID original 
+                // pero con un nuevo timestamp de registro para que cuente como "venta de hoy"
+                const dataUpdate = {
+                    action: 'UPDATE',
+                    id: id,
+                    vencimiento: nuevaFechaStr,
+                    // Re-enviamos estos datos para asegurar que se mantengan en la fila
+                    costo: c[4], 
+                    precio: c[5],
+                    // Importante: Actualizamos el timestamp del ID para que el Dashboard lo cuente HOY
+                    nuevoId: Date.now().toString() 
+                };
+
+                try {
+                    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dataUpdate) });
+                    alert("✅ Renovación exitosa. Fecha y volumen actualizados.");
+                    location.reload();
+                } catch (e) {
+                    alert("Error al renovar.");
+                }
+            }
+        }
+
+        function enviarWA(id, tipo) {
+            const c = clientesGlobal.find(x => x[0].toString().trim() === id.toString().trim());
+            if (!c) return alert("⚠️ Error: Datos no sincronizados.");
+
+            const num = c[2].toString().replace(/\D/g, '');
             const fechaLimpia = c[10].toString().split("T")[0]; 
             let msj = "";
 
@@ -231,19 +257,7 @@
             } else if (tipo === 0) {
                 msj = `¡Hola *${c[1]}*! 🚨\n\nTu servicio **VENCE HOY**. Renueva ahora para evitar el corte. ⏳`;
             }
-            
-            const link = `https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msj)}`;
-            window.open(link, '_blank');
-        }
-
-        async function renovar(id) {
-            const c = clientesGlobal.find(x => x[0].toString() === id.toString());
-            if (confirm(`¿Renovar 30 días?`)) {
-                let fv = procesarFecha(c[10]);
-                fv.setDate(fv.getDate() + 30);
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'UPDATE', id: id, vencimiento: fv.toISOString().split('T')[0] }) });
-                location.reload();
-            }
+            window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msj)}`, '_blank');
         }
 
         async function eliminar(id) {
