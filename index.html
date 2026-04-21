@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streaming Planet - Panel Administrativo V2</title>
+    <title>Planet Streaming - Panel Administrativo V2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
@@ -51,7 +51,7 @@
             <div class="bg-slate-900/50 p-6 rounded-3xl border border-slate-800 shadow-2xl">
                 <h3 class="text-blue-500 font-black text-sm uppercase mb-6 flex items-center gap-2">
                     <span class="w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
-                    Nueva Venta Multiservicio
+                    Nueva Venta Planet Streaming
                 </h3>
                 <div class="space-y-4">
                     <input type="text" id="nombre" placeholder="NOMBRE DEL CLIENTE" class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 outline-none focus:border-blue-500 uppercase font-bold text-white text-xs transition-all">
@@ -85,7 +85,7 @@
         <div class="lg:col-span-8">
             <div class="bg-slate-900/50 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
                 <div class="p-6 border-b border-slate-800 flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <h3 class="font-black text-xs uppercase tracking-widest text-slate-400">Clientes Activos</h3>
+                    <h3 class="font-black text-xs uppercase tracking-widest text-slate-400">Clientes Activos - Planet Streaming</h3>
                     <input type="text" id="buscador" oninput="renderizarTabla()" placeholder="Buscar cliente o servicio..." class="w-full md:w-64 bg-slate-950 p-3 rounded-xl border border-slate-800 outline-none text-xs text-white focus:border-blue-500">
                 </div>
                 <div class="overflow-x-auto">
@@ -193,6 +193,7 @@
             };
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                alert("¡Venta registrada con éxito!");
                 location.reload();
             } catch (e) {
                 btn.disabled = false;
@@ -236,11 +237,11 @@
                     <td class="p-4 text-center"><span class="px-3 py-1 rounded-full border text-[10px] font-black ${colorStatus}">${diasRestantes <= 0 ? 'VENCIDO' : diasRestantes + ' DÍAS'}</span></td>
                     <td class="p-4 text-center font-mono text-slate-500">${c[10].toString().split('T')[0]}</td>
                     <td class="p-4"><div class="flex flex-wrap gap-2 justify-center">
-                        <button onclick="enviarMensaje('${c[0]}', 'datos')" class="bg-blue-600 px-3 py-1.5 rounded-lg font-black text-[9px] uppercase hover:bg-blue-500">Accesos</button>
+                        <button onclick="enviarMensaje('${c[0]}', 'datos')" class="bg-blue-600 px-3 py-1.5 rounded-lg font-black text-[9px] uppercase hover:bg-blue-500">Enviar Accesos</button>
                         <button onclick="enviarMensaje('${c[0]}', 3)" class="bg-yellow-500 text-black px-3 py-1.5 rounded-lg font-black text-[9px] uppercase hover:bg-yellow-400">Aviso 3D</button>
                         <button onclick="enviarMensaje('${c[0]}', 0)" class="bg-red-600 px-3 py-1.5 rounded-lg font-black text-[9px] uppercase hover:bg-red-500">Aviso 0D</button>
                     </div></td>
-                    <td class="p-4 text-right"><button onclick="eliminar('${c[0]}')" class="text-slate-700 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></td>
+                    <td class="p-4 text-right"><button onclick="eliminar('${c[0]}')" class="text-slate-700 hover:text-red-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button></td>
                 </tr>`;
             });
             tabla.innerHTML = html || '<tr><td colspan="5" class="p-10 text-center text-slate-600 italic">No hay registros</td></tr>';
@@ -251,7 +252,7 @@
             document.getElementById('gananciaAnio').innerText = `$${uA.toFixed(2)}`;
         }
 
-        // --- ACTUALIZACIÓN DE FORMATO DE ENVÍO ---
+        // --- FUNCIÓN DE MENSAJERÍA ACTUALIZADA ---
         function enviarMensaje(id, tipo) {
             const cliente = clientesGlobal.find(x => x[0].toString() === id.toString());
             if (!cliente) return;
@@ -271,17 +272,19 @@
 
             let msj = "";
             if (tipo === 'datos') {
-                msj = `🚀 *SERVICIO ACTIVO - ${cliente[1]}* ⭐\nGracias por preferir *Streaming Planet*\n\n${detalleSuscripciones}\n🚨 *REGLAS IMPORTANTES:*\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.\n* Disfruta tu programación 🍿.`;
+                // Formato exacto solicitado
+                msj = `🚀 *SERVICIOS ACTIVOS - ${cliente[1]}* ⭐\nGracias por preferir *Planet Streaming*\n\n${detalleSuscripciones}🚨 *REGLAS IMPORTANTES:*\n* No cambiar datos de la cuenta.\n* Usar solo el perfil asignado.\n* Disfruta tu programación 🍿.`;
             } else if (tipo === 3) {
-                msj = `Hola *${cliente[1]}* 👋\n\nRecordatorio de *Streaming Planet* 🚀\nTu servicio vence en *3 DÍAS*. Aquí tus datos:\n\n${detalleSuscripciones}¿Renovamos para no perder tu programación? 🍿`;
+                msj = `Hola *${cliente[1]}* 👋\n\nTe recordamos desde *Planet Streaming* que tu suscripción vence en *3 DÍAS*.\n\n${detalleSuscripciones}¿Deseas renovar para no perder tu perfil? 🍿`;
             } else if (tipo === 0) {
-                msj = `¡Hola *${cliente[1]}*! 🚨\n\nTu servicio en *Streaming Planet* **VENCE HOY**.\n\n${detalleSuscripciones}Evita cortes renovando antes de finalizar el día. ⏳🍿`;
+                msj = `⚠️ *¡AVISO DE VENCIMIENTO!* ⚠️\n\nHola *${cliente[1]}*, tu servicio en *Planet Streaming* vence el día de *HOY*.\n\n${detalleSuscripciones}Quedamos atentos a tu renovación para evitar el corte del servicio. ⏳🍿`;
             }
+
             window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msj)}`, "_blank");
         }
 
         async function eliminar(id) {
-            if (confirm("¿Eliminar cliente?")) {
+            if (confirm("¿Seguro que deseas eliminar este cliente?")) {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'DELETE', id: id }) });
                 location.reload();
             }
